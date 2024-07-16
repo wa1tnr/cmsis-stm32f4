@@ -25,35 +25,37 @@ term:
 
 # @pio pkg exec --package "platformio/tool-dfuutil-arduino" -- <CMD> [ARGS]
 
-# upload not configured:
+# upload, not configured:
 
 upload-unconf:
 	@pio run -t upload
 
 dfu-upload:
-	@dfu-util -a 0 --dfuse-address 0x08000000 -D .pio/build/blackpill_f411ce/firmware.bin 
+	@dfu-util --detach -a 0 --dfuse-address 0x08000000:leave -D .pio/build/blackpill_f411ce/firmware.bin
 
 dfu-util-list:
 	@pio pkg exec --package "platformio/tool-dfuutil-arduino" -- dfu-util --list 
 
-# Found DFU: [0483:df11] ver=2200, devnum=5, cfg=1, intf=0, path="1-9", alt=0, name="@Internal Flash  /0x08000000/04*016Kg,01*064Kg,03*128Kg", serial="ABCDEF012345"
+### Found DFU: [0483:df11] ver=2200, devnum=7, cfg=1, intf=0, path="1-9", alt=0, name="@Internal Flash  /0x08000000/04*016Kg,01*064Kg,03*128Kg", serial="ABCDEF012345"
 
 dfu-util-help:
 	@pio pkg exec --package "platformio/tool-dfuutil-arduino" -- dfu-util --help
 
 BUILT_FIRMWARE=./.pio/build/blackpill_f411ce/firmware.bin
 
+# download has no experiments to use the target after firmware upload DFU:
+
 download:
 	@pio pkg exec --package "platformio/tool-dfuutil-arduino" -- \
-		dfu-util --devnum 5 --alt 0 --dfuse-address 0x08000000 \
+		dfu-util --detach --alt 0 --dfuse-address 0x08000000 \
 		--download ${BUILT_FIRMWARE}
+
 upload:	download
 
 .PHONY:	upload
 
 upgrade:
 	pio upgrade
-
 
 # https://docs.platformio.org/en/latest/core/userguide/pkg/cmd_update.html#cmd-pkg-update
 
@@ -80,6 +82,4 @@ clean:
 
 distclean: clean
 	rm -rf ./.pio
-
-
 
