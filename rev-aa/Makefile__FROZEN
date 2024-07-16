@@ -1,0 +1,85 @@
+
+#  blackpill_f411ce   STM32F411CEU6   100MHz   512KB   128KB   WeAct Studio BlackPill V2.0 (STM32F411CE)
+
+#  pio project init --board blackpill_f411ce
+
+
+all:
+	pio run
+
+monitor:
+	pio run -t monitor
+
+envdump:
+	@pio run --target envdump
+
+devlist:
+	pio device list
+
+term:
+	sleep 2; ./cf-fastpico9t /dev/ttyACM0
+
+# https://docs.platformio.org/en/latest/core/userguide/pkg/cmd_exec.html
+
+# OPTION:  bypass platformio for dfu-util:
+
+# @pio pkg exec --package "platformio/tool-dfuutil-arduino" -- <CMD> [ARGS]
+
+# upload not configured:
+
+upload-unconf:
+	@pio run -t upload
+
+dfu-upload:
+	@dfu-util -a 0 --dfuse-address 0x08000000 -D .pio/build/blackpill_f411ce/firmware.bin 
+
+dfu-util-list:
+	@pio pkg exec --package "platformio/tool-dfuutil-arduino" -- dfu-util --list 
+
+# Found DFU: [0483:df11] ver=2200, devnum=5, cfg=1, intf=0, path="1-9", alt=0, name="@Internal Flash  /0x08000000/04*016Kg,01*064Kg,03*128Kg", serial="ABCDEF012345"
+
+dfu-util-help:
+	@pio pkg exec --package "platformio/tool-dfuutil-arduino" -- dfu-util --help
+
+BUILT_FIRMWARE=./.pio/build/blackpill_f411ce/firmware.bin
+
+download:
+	@pio pkg exec --package "platformio/tool-dfuutil-arduino" -- \
+		dfu-util --devnum 5 --alt 0 --dfuse-address 0x08000000 \
+		--download ${BUILT_FIRMWARE}
+upload:	download
+
+.PHONY:	upload
+
+upgrade:
+	pio upgrade
+
+
+# https://docs.platformio.org/en/latest/core/userguide/pkg/cmd_update.html#cmd-pkg-update
+
+pkgupdate:
+	pio pkg update
+
+pkglist:
+	pio pkg list
+
+# https://docs.platformio.org/en/latest/core/userguide/pkg/cmd_outdated.html#cmd-pkg-outdated
+
+outdated:
+	pio pkg outdated
+
+git_status:
+	@git status | cat | tr -d '\t'
+
+pwd:
+	@echo -n '  ..'
+	@pwd | cut -b 27-
+
+clean:
+	pio run -t clean
+
+distclean: clean
+	rm -rf ./.pio
+
+
+
