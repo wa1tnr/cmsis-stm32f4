@@ -1,7 +1,9 @@
 
 #  blackpill_f411ce   STM32F411CEU6   100MHz   512KB   128KB   WeAct Studio BlackPill V2.0 (STM32F411CE)
-
 #  pio project init --board blackpill_f411ce
+
+# disco_f407vg   STM32F407VGT6   168MHz   1MB   128KB   ST STM32F4DISCOVERY
+#  pio project init --board disco_f407vg
 
 
 all:
@@ -30,8 +32,13 @@ term:
 upload-unconf:
 	@pio run -t upload
 
+upload-dl:	download
+
+upload:	upload-unconf
+.PHONY:	upload
+
 dfu-upload:
-	@dfu-util --detach -a 0 --dfuse-address 0x08000000:leave -D .pio/build/blackpill_f411ce/firmware.bin
+	@dfu-util --detach -a 0 --dfuse-address 0x08000000:leave -D .pio/build/disco_f407vg/firmware.bin
 
 dfu-util-list:
 	@pio pkg exec --package "platformio/tool-dfuutil-arduino" -- dfu-util --list 
@@ -49,10 +56,6 @@ download:
 	@pio pkg exec --package "platformio/tool-dfuutil-arduino" -- \
 		dfu-util --detach --alt 0 --dfuse-address 0x08000000 \
 		--download ${BUILT_FIRMWARE}
-
-upload:	download
-
-.PHONY:	upload
 
 upgrade:
 	pio upgrade
