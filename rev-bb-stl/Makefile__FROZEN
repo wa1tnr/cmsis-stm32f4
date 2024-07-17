@@ -29,6 +29,9 @@ term:
 
 # @pio pkg exec --package "platformio/tool-dfuutil-arduino" -- <CMD> [ARGS]
 
+erase:	./scripts.d/_erase_firmware_on_stm32f407disc-a.sh
+	@./scripts.d/_erase_firmware_on_stm32f407disc-a.sh
+
 # upload, not configured:
 
 upload-unconf:
@@ -36,7 +39,25 @@ upload-unconf:
 
 upload-dl:	download
 
-upload:	upload-unconf
+upload-shell_script_method:	./scripts.d/_upload_firmware_to_stm32f407disc-a.sh
+	@echo
+	@echo
+	@date
+	@echo
+	@echo attempt to use shell script
+	@echo
+	@echo
+	@pio run # new experiment
+	@echo
+	@date
+	@echo
+	@echo
+	@./scripts.d/_upload_firmware_to_stm32f407disc-a.sh
+
+upload_xaa:	upload-unconf
+.PHONY:	upload_xaa
+
+upload:	upload-shell_script_method
 .PHONY:	upload
 
 dfu-upload:
