@@ -1,3 +1,5 @@
+# Makefile__FROZEN
+# Wed 17 Jul 00:32:54 UTC 2024
 
 #  blackpill_f411ce   STM32F411CEU6   100MHz   512KB   128KB   WeAct Studio BlackPill V2.0 (STM32F411CE)
 #  pio project init --board blackpill_f411ce
