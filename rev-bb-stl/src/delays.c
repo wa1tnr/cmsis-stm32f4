@@ -13,6 +13,10 @@
 const int nN = 55000;
 const int N = nN * 4;
 
+void blinkDelayOffToOn() {
+    for (volatile int i = nN; i > 0; i--) ;
+}
+
 void slowing() {
     for (volatile int i = N; i > 0; i--)
         ;
@@ -36,11 +40,10 @@ void ldelayed() {
     }
 }
 
+extern void blink();
+
 void blink_once() {
-    GPIOD->BSRR = GPIO_BSRR_BS_15;
-    for (volatile int i = nN; i > 0; i--)
-        ;
-    GPIOD->BSRR = GPIO_BSRR_BR_15;
+    blink();
     slowing();
 }
 

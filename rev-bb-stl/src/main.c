@@ -40,6 +40,13 @@
 
 extern void blink_once();
 extern void slowest();
+extern void blinkDelayOffToOn();
+
+void blink() {
+    GPIOD->BSRR = GPIO_BSRR_BS_15;
+    blinkDelayOffToOn();
+    GPIOD->BSRR = GPIO_BSRR_BR_15;
+}
 
 void GPIOC_MODER_bang(void) {
     GPIOC->MODER |= GPIO_MODER_MODE6_1 | GPIO_MODER_MODE7_1;
