@@ -1,17 +1,13 @@
 
 /****
  *
- * Wed 17 Jul 05:51:07 UTC 2024
+ * Thu 18 Jul 19:51:50 UTC 2024
  *
  */
 
-// #include <Arduino.h>
-// #include <stdbool.h>
-// #include <stdint.h>
 #include <stm32f4xx.h>
 #include <stm32f4xx_hal_gpio_ex.h>
 
-// #define pinNumber 15 // PD15
 #define SLOW_CONST 3
 
 const int nN = 55000;
@@ -41,12 +37,11 @@ void ldelayed() {
 }
 
 void blink_once() {
-    GPIOD->BSRR = GPIO_BSRR_BS_15; // SET is ON forever - Blue LED
+    GPIOD->BSRR = GPIO_BSRR_BS_15;
     for (volatile int i = nN; i > 0; i--)
         ;
     GPIOD->BSRR = GPIO_BSRR_BR_15;
     slowing();
-    // for (volatile int i = OTIME; i > 0; i--) ;
 }
 
 void payload(void) {
@@ -88,21 +83,5 @@ void monitor(void) {
         }
     }
 }
-
-#if 0
-void payload(void) {
-    blink_once();
-    for (int delays = 3; delays > 0; delays--) {
-        slowing();
-    }
-}
-
-void payloadCountedLoop(int count) {
-    for (int iter = count; iter > 0; iter--) {
-        payload();
-    }
-}
-
-#endif
 
 /* end. */
