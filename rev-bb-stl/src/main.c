@@ -1,6 +1,7 @@
 
 /****
  *
+ * Sat 20 Jul 02:48:47 UTC 2024
  * Wed 17 Jul 05:51:07 UTC 2024
  *
  * STATUS - although the code was guesswork, at a minimum,
@@ -41,6 +42,10 @@
 extern void blink_once();
 extern void slowest();
 extern void blinkDelayOffToOn();
+extern void sayHi();
+extern void ldelayed();
+extern void monitor();
+
 
 void blink() {
     GPIOD->BSRR = GPIO_BSRR_BS_15;
@@ -93,7 +98,6 @@ void enable_RCC_AHB1ENR_GPIOD() {
 }
 // c-lang-format on
 
-extern void sayHi();
 
 void primary(void) {
     enable_RCC_AHB1ENR_GPIOD();
@@ -104,8 +108,6 @@ void primary(void) {
     sayHi();
 }
 
-extern void ldelayed();
-extern void monitor();
 int main(void) {
     primary();
     largest_USART6();
@@ -119,26 +121,6 @@ int main(void) {
 }
 
 /****
- *
- *
- *
- *
- * *********************************************************
- * *********************************************************
- * *********************************************************
- * *********************************************************
- * *********************************************************
- *   Menu: Go > Switch Editor   GO SWITCH EDITOR and GO SWITCH GROUP!
- *   Menu: Go > Switch Editor   GO SWITCH EDITOR and GO SWITCH GROUP!
- *
- * *********************************************************
- * *********************************************************
- * *********************************************************
- * *********************************************************
- * *********************************************************
- * *********************************************************
- * *********************************************************
- *
  *
  *
  *
