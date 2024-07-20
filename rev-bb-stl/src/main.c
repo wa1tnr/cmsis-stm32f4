@@ -33,18 +33,22 @@
 #include <stm32f4xx.h>
 #include <stm32f4xx_hal_gpio_ex.h>
 
+#include <delays.h>
+
 #define pinNumber 15 // PD15
 #define SLOW_CONST 3
 
 // ref. https://stackoverflow.com/questions/59546305/stm32f103-gpio-ports
 // RCC_APB2ENR  112, 146    GPIOx_CRH  172
 
+#if 0
 extern void blink_once();
 extern void slowest();
 extern void blinkDelayOffToOn();
 extern void sayHi();
 extern void ldelayed();
 extern void monitor();
+#endif
 
 
 void blink() {
