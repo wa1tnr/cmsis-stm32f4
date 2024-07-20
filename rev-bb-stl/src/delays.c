@@ -10,11 +10,11 @@
 
 #define SLOW_CONST 3
 
-const int nN = 55000;
-const int N = nN * 4;
+const int baseN = 55000;
+const int N = baseN * 4;
 
 void blinkDelayOffToOn() {
-    for (volatile int i = nN; i > 0; i--) ;
+    for (volatile int i = baseN; i > 0; i--) ;
 }
 
 void slowing() {
