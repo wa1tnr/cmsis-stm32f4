@@ -41,16 +41,6 @@
 // ref. https://stackoverflow.com/questions/59546305/stm32f103-gpio-ports
 // RCC_APB2ENR  112, 146    GPIOx_CRH  172
 
-#if 0
-extern void blink_once();
-extern void slowest();
-extern void blinkDelayOffToOn();
-extern void sayHi();
-extern void ldelayed();
-extern void monitor();
-#endif
-
-
 void blink() {
     GPIOD->BSRR = GPIO_BSRR_BS_15;
     blinkDelayOffToOn();
