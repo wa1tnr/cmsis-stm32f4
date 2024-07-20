@@ -69,6 +69,7 @@ void SET_GPIOC_MODER_PC6_PC7_ALT_A() {
         (0x8UL << GPIO_AFRL_AFSEL6_Pos) | (0x8UL << GPIO_AFRL_AFSEL7_Pos);
 }
 
+// clang-format off
 void enable_USART6() {
     RCC->APB2ENR |= RCC_APB2ENR_USART6EN;
 }
@@ -77,9 +78,15 @@ void enable_RCC_AHB1ENR_GPIOC() {
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
 }
 
+void enable_RCC_AHB1ENR_GPIOD() {
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
+}
+// clang-format on
+
 /* TODO: give this a better name than largest foo */
 
 void largest_USART6(void) {
+    enable_RCC_AHB1ENR_GPIOC();
     enable_USART6();
     SET_GPIOC_MODER_PC6_PC7_ALT_A();
     GPIOC_MODER_bang();
@@ -87,20 +94,11 @@ void largest_USART6(void) {
     SETUP_USART6_CR1();
 }
 
-// c-lang-format off
-void enable_RCC_AHB1ENR_GPIOD() {
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
-}
-// c-lang-format on
-
-
 void primary(void) {
     enable_RCC_AHB1ENR_GPIOD();
-    // GPIOD__MODER____GPIO_MODER_MODER15_0();
     GPIOD_MODER_bang();
     GPIOD->OTYPER = 0;
     GPIOD->OSPEEDR = 0;
-    enable_RCC_AHB1ENR_GPIOC();
     sayHi();
 }
 
