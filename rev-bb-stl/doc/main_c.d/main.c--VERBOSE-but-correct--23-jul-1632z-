@@ -1,0 +1,334 @@
+/* main.c */
+/* Sat 20 Jul 02:48:47 UTC 2024 */
+
+/* USART6 enable and write-only (no listener) */
+/* port:  Forth source to C language */
+
+/* utilise: CMSIS notation and paradigm */
+
+/****
+ * PD15  LD6  Blue
+ * PD12  LD4  Green  #  PD13 LD3  Orange  # PD14 LD5  Red
+ ***/
+
+#include <stdbool.h>
+#include <stdint.h>
+#include <stm32f4xx.h>
+#include <stm32f4xx_hal_gpio_ex.h>
+
+#include <delays.h>
+
+#define pinNumber 15 // PD15
+#define SLOW_CONST 3
+
+// ref. https://stackoverflow.com/questions/59546305/stm32f103-gpio-ports
+// RCC_APB2ENR  112, 146    GPIOx_CRH  172
+
+void blink() {
+    GPIOD->BSRR = GPIO_BSRR_BS_15;
+    blinkDelayOffToOn();
+    GPIOD->BSRR = GPIO_BSRR_BR_15;
+}
+
+void GPIOC_MODER_bang(void) {
+    GPIOC->MODER |= GPIO_MODER_MODE6_1 | GPIO_MODER_MODE7_1;
+}
+
+void GPIOD_MODER_bang(void) {
+    /* PD15 is Blue LED - all 4x on PORT D pins 12-15 */
+    GPIOD->MODER |= GPIO_MODER_MODER15_0;
+}
+
+void set_USART6_BRR(void) { USART6->BRR = 0x138; /* 115200 */ }
+
+//  LINE 12513 ++ is USART_CR1 'register' (says the .h file)
+
+// 12555 #define USART_CR1_UE for example.
+// it is 'USART Enable'.  Have not found this as directly in datasheet.
+// Not sure what was overlooked in that search but wasn't found (today).
+// GOOD OLD PAGE 1010 - this is 30.6.4 in the USART section of the Datasheet.
+// That was what was (entirely!) overlooked. Tunnel vision.
+// plus or minus the QRM ;)
+
+// ###bookmark 53
+void SETUP_USART6_CR1(void) {
+    // movw	r1, #0x0200C	; enable USART //
+    // 1 << 13-ish
+    // #d_efine  USART_CR1_UE  ((uint32_t)0x2000)  /*!<USART Enable */
+    // register for CR1:
+    // 30.6.4  Control register 1 (USART_CR1)  p 1010
+
+    USART6->CR1 &= ~USART_CR1_UE;
+    // CR1_UE is bit 13 only
+    // when you AND onto the regiter,
+    // you reset all bits but those in
+    // the mask.  the tilde leading is
+    // idk what in this notation.
+    // see if wiping the others back to 0
+    // fits what you know.
+    // findings: all but one bit reset
+    // makes good sense.  It seems to also
+    // disable receive and focuses on TX.
+    // not sure if that is right, but,
+    // otoh, ting's code was for Hello World
+    // printing and had nothing at all to
+    // do with serial input so it is
+    // likely that ting said 'no' to that bit.
+
+    USART6->CR1 |= USART_CR1_RE;
+    // oh so here ting OR's the bit set
+    // as just mentioned.
+    // he enables receive as a distinct step.
+
+    set_USART6_BRR();
+    // now ting just sets the baud rate.
+
+    // USART6->BRR = 0x138; /* 115200 */
+    USART6->CR1 |= USART_CR1_UE;
+}
+
+void map_AFR_USART6() {
+
+    GPIOC->AFR[0] |=
+        (0x8UL << GPIO_AFRL_AFSEL6_Pos) | (0x8UL << GPIO_AFRL_AFSEL7_Pos);
+}
+
+void enable_USART6() { RCC->APB2ENR |= RCC_APB2ENR_USART6EN; }
+
+void enable_RCC_AHB1ENR_GPIOC() { RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN; }
+
+void enable_RCC_AHB1ENR_GPIOD() { RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN; }
+
+#if 0
+void DEPRECATED_largest_USART6(void) {
+    enable_RCC_AHB1ENR_GPIOC();
+    enable_USART6();
+    map_AFR_USART6();
+    GPIOC_MODER_bang();
+    GPIOC->OSPEEDR |= GPIO_OSPEEDR_OSPEED6 | GPIO_OSPEEDR_OSPEED7;
+    SETUP_USART6_CR1();
+}
+#endif
+
+void tingInitUSART6(void) {
+    // L106: InitDevices
+
+    // L108-111:
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
+    // note: 111 because 0x30 matches probably part of it
+
+    // L112-114:
+    RCC->APB2ENR |= RCC_APB2ENR_USART6EN;
+
+    // L115: init GPIOC
+
+    /***
+     *
+     * There is only one use of MODER in all of
+     * Ting's code.  One.
+     *
+     */
+
+    // #define GPIO_AFRL_AFSEL6_Pos             (24U)
+    // #define GPIO_AFRL_AFSEL7_Pos             (28U)
+
+    // now on trial 15:56z Sun 21st: MODE vs MODER last term (is it just an
+    // alias or does it compile or .. ) L116-x
+    // clang-format off
+
+    // 8.4.1 p. 281 - MODER:
+
+    // want: AF8 'made' here (nope; not just yet)
+
+    // GPIO_MODER_MODER6_1  is ((uint32_t)0x00002000)
+    // L116-119:
+    GPIOC->MODER |= GPIO_MODER_MODER6_1 |
+        GPIO_MODER_MODER7_1;
+    // MODER gets 0xA000 for AF mode
+    // The above is correct; puts 0xA000 onto MODER
+    // to do both pins (tell MODER they are to use
+    // AF_anything w/out specifying AF8 explicitly)
+
+    // 2000 is
+
+
+    // just look at MODER itself
+    // it's right - bits 1 and 0:
+    // MODER6[1:0] occupy bits 13 and 12 of MODER
+    // so the only information passed into MODER
+    // is 'AFR' with no other qualifier.  Does
+    // not specify AF8; instead specifies which PIN
+    // not which AF (0-15).  Continue.
+
+    // clang-format on
+
+    // there is also the same thing but MODER6_1 &c so watch out for that
+
+    // try it with MODER6_1 for fun
+    // but remember there was a decision not to do so in practice
+
+    // result: no difference - compiles just the same.
+    // did not exec to be sure. do so.
+
+    // did so. fine.
+
+    // remember: not usart6 based testing;
+    // just a compile-and-run; no crash testing.
+
+    // 8.4.9  p 285 - AFRL
+    // this is right by itself; AFRL is a 32-bit register,
+    // and wants 0x88000000 for both pins 7 and 6 (PC7, PC6):
+    // L120-122:
+    // clang-format off
+    GPIOC->AFR[0] |=
+        (0x8UL << GPIO_AFRL_AFSEL6_Pos) |
+            (0x8UL << GPIO_AFRL_AFSEL7_Pos);
+        // hex 8 1C lshift . 80000000  ok
+        // hex 8 18 lshift  . 8000000  ok
+    // clang-format on
+
+    // #define GPIO_AFRL_AFSEL6_Pos             (24U)
+    // 24 decimal is 0x18
+    // 0x08 0x18 lshift
+    //  hex 8 18 lshift dup .
+
+
+
+    //
+    // ldr	r1, [r0, #0x20]	; GPIOx_AFRL
+    // the 0x20 is probably the physical addressing offet off the base of GPIOC
+    // (B in ting's code) 0x20 GPIOx_AFRL in Table 39 confirms this notion.
+
+    // OKAY:
+
+    // What is being done here is to generate 0x8000000 per GPIOC_AFRL spec:
+
+    // 8.4.9 GPIO alternate function low register (GPIOx_AFRL) (x = A..I/J/K)
+    // Address offset: 0x20Reset value: 0x0000 0000
+
+    // each position is 4 bits (8x4 = 32)
+    // The '8' in 0x08000000
+    //         in 0x 0800 0000
+    // .. is ..
+    // AFRL6[3:0] (bit 2^3, 2^2, 2^1 and 2^0 for .. pin 6 (PC6))
+    // The 8 is AFR 8, which can be for USART6 (and others)
+    // per:
+    // Figure 26. Selecting an alternate function on  STM32F405xx/07xx and
+    // STM32F415xx/17xx see how AF8 (USART4..6) pinmuxes onto AFRL bits 31:0 ..
+    // AF* enables USART6 as well as 4 and 5, though unclear how that
+    // differentiates.  Since it is pins 6 and 7 (only) being claimed for
+    // USART6, stands to reason with enough fdaddlin you could go ahead and
+    // utilize USART4 and USART5 (on two more pairs of pins) 'as well'. so long
+    // as none are shared across two different USARTS.
+
+    // NEXT QUESTION: what is 'GPIOC' in the left side -- isrt this is a MODER
+    // at the end of the day (composing what to bang into GPIOC MODER)
+
+    // Fact: 8.4.11 GPIO register map 'has everything covered' so nothing was
+    // overlooked. The AFRL stuff is obviously what obtains. The syntax compiles
+    // as-is. Most (not all) stuff setup so far relates quite well to both
+    // assembler and eForth forth source code implementations.
+    // Pretty clear the source implem. just bangs into GPIOC MODER.
+    // which itself is an address offset from the base address.
+    // Just still not seeing any role other than symbolic thinking
+    // for what is done vs what is happening as a result.
+    // The notation is fine from the .H file #defines, but
+    // is still a bit unintuitive at this juncture.
+    // Testing with CP2104 connected will help some; there is
+    // a concern it is 'already set up' and would give a false positive &c.
+    // since this is arduino framework.
+    // another concern is clock speed - ting set this up for 16 MHz (iirc)
+    // and def. for default clock (ting never prescales or what have you)
+    // whereas the framework is likely to monkey with something or other.
+    // the relief: put it on the bench and the oscope and just have at.
+    // that's been done before (have extant JPG screencaps) just quiz it
+    // with 0xA5 or 0x5A (symmetrical waveform tty serial)
+
+
+// ###bookmark 245
+    // 30.6.4  Control register 1 (USART_CR1)  p 1010
+    // 0x200C enable usart is next
+    // the 0x0C component is the address offset of this
+    // control register (USART_CR1)
+    // the 2000 component is: simply bit 13, UE.
+    // that's all that is about.
+    // the code (live):
+
+	// Lines 124-126:
+    USART6->CR1 &= ~USART_CR1_UE;
+    // RX enable foo (not precice xlation)
+    USART6->CR1 |= USART_CR1_RE;
+	// Lines 127-128:
+    USART6->BRR = 0x138; /* 115200 */
+    // and that ends it.
+    // next lines are for PortD and are about the LEDs (blue orange green red iirc)
+}
+
+/***
+ *
+ * Line 8948:
+ *
+ * #define GPIO_AFRL_AFSEL6_Pos             (24U)
+ *
+ *
+ *
+ *
+ */
+
+/***
+ *
+ * stm32f407xx.h
+ *
+ * L8074-8078:
+ *
+ * #define GPIO_MODER_MODER6_Pos    (12U)
+ * #define GPIO_MODER_MODER6_Msk    (0x3UL << GPIO_MODER_MODER6_Pos)    // <
+ * 0x00003000 // #define GPIO_MODER_MODER6        GPIO_MODER_MODER6_Msk #define
+ * GPIO_MODER_MODER6_0      (0x1UL << GPIO_MODER_MODER6_Pos)    // < 0x00001000
+ * // #define GPIO_MODER_MODER6_1      (0x2UL << GPIO_MODER_MODER6_Pos)    // <
+ * 0x00002000 //
+ *
+ * L8160:
+ *
+ * #define GPIO_MODER_MODE6_1               GPIO_MODER_MODER6_1
+ *
+ */
+
+void primary(void) {
+    enable_RCC_AHB1ENR_GPIOD();
+    GPIOD_MODER_bang();
+    GPIOD->OTYPER = 0;
+    GPIOD->OSPEEDR = 0;
+    sayHi();
+}
+
+int main(void) {
+    primary();
+    tingInitUSART6();
+    /*******************************************************************/
+    /* KEEP:  do NOT remove COMMENT saying largest_USART6() goes here: */
+    /* KEEP:  largest_USART6();                                        */
+    /*******************************************************************/
+    ldelayed();
+    monitor();
+    return 0;
+}
+
+/****
+ *
+ *   Peripheral alternate function
+ *   For other peripherals [incl USARTx]:
+ *     – Configure the desired I/O as an alternate function in the GPIOx_MODER
+ * register – Select the type, pull-up/pull-down and output speed via the
+ * GPIOx_OTYPER, GPIOx_PUPDR and GPIOx_OSPEEDR registers, respectively – Connect
+ * the I/O to the desired AFx in the GPIOx_AFRL or GPIOx_AFRH register
+ *
+ */
+
+/****
+ *
+ *
+ *
+ */
+
+/* end. */
