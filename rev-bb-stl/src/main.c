@@ -1,5 +1,9 @@
 /* main.c */
-/* Sat 20 Jul 02:48:47 UTC 2024 */
+
+/***
+ * large revision -
+ * Tue 23 Jul 16:47:38 UTC 2024
+ */
 
 /* USART6 enable and write-only (no listener) */
 /* port:  Forth source to C language */
@@ -30,50 +34,26 @@ void blink() {
     GPIOD->BSRR = GPIO_BSRR_BR_15;
 }
 
-void GPIOC_MODER_bang(void) {
-    GPIOC->MODER |= GPIO_MODER_MODE6_1 | GPIO_MODER_MODE7_1;
-}
-
 void GPIOD_MODER_bang(void) {
     /* PD15 is Blue LED - all 4x on PORT D pins 12-15 */
     GPIOD->MODER |= GPIO_MODER_MODER15_0;
 }
 
-void set_USART6_BRR(void) {
-    USART6->BRR = 0x138; /* 115200 */
-}
-
-void SETUP_USART6_CR1(void) {
+void initUSART6(void) {
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
+    RCC->APB2ENR |= RCC_APB2ENR_USART6EN;
+    GPIOC->MODER |= GPIO_MODER_MODER6_1 |
+        GPIO_MODER_MODER7_1;
+    GPIOC->AFR[0] |=
+        (0x8UL << GPIO_AFRL_AFSEL6_Pos) |
+            (0x8UL << GPIO_AFRL_AFSEL7_Pos);
     USART6->CR1 &= ~USART_CR1_UE;
     USART6->CR1 |= USART_CR1_RE;
-    set_USART6_BRR();
-    // USART6->BRR = 0x138; /* 115200 */
-    USART6->CR1 |= USART_CR1_UE;
-}
-
-void map_AFR_USART6() {
-    GPIOC->AFR[0] |=
-        (0x8UL << GPIO_AFRL_AFSEL6_Pos) | (0x8UL << GPIO_AFRL_AFSEL7_Pos);
-}
-
-void enable_USART6() {
-    RCC->APB2ENR |= RCC_APB2ENR_USART6EN;
-}
-
-void enable_RCC_AHB1ENR_GPIOC() {
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
+    USART6->BRR = 0x138; /* 115200 */
 }
 
 void enable_RCC_AHB1ENR_GPIOD() {
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
-}
-void largest_USART6(void) {
-    enable_RCC_AHB1ENR_GPIOC();
-    enable_USART6();
-    map_AFR_USART6();
-    GPIOC_MODER_bang();
-    GPIOC->OSPEEDR |= GPIO_OSPEEDR_OSPEED6 | GPIO_OSPEEDR_OSPEED7;
-    SETUP_USART6_CR1();
 }
 
 void primary(void) {
@@ -86,20 +66,10 @@ void primary(void) {
 
 int main(void) {
     primary();
-    largest_USART6();
-    /*******************************************************************/
-    /* KEEP:  do NOT remove COMMENT saying largest_USART6() goes here: */
-    /* KEEP:  largest_USART6();                                        */
-    /*******************************************************************/
+    initUSART6();
     ldelayed();
     monitor();
     return 0;
 }
-
-/****
- *
- *
- *
- */
 
 /* end. */
