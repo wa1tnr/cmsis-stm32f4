@@ -11,15 +11,12 @@
  * PD12  LD4  Green  #  PD13 LD3  Orange  # PD14 LD5  Red
  ***/
 
-
 #if 0
 #include <stdint.h>
 #endif
 
-
-#include <stm32f4xx.h>
 #include <stdbool.h>
-
+#include <stm32f4xx.h>
 
 #if 0
 #include <stm32f4xx_hal_gpio_ex.h>
@@ -39,13 +36,9 @@ void blink() {
     GPIOD->BSRR = GPIO_BSRR_BR_15;
 }
 
-void resetBlueLED() {
-    GPIOD->BSRR = GPIO_BSRR_BR_15;
-}
+void resetBlueLED() { GPIOD->BSRR = GPIO_BSRR_BR_15; }
 
-void setBlueLED() {
-    GPIOD->BSRR = GPIO_BSRR_BS_15;
-}
+void setBlueLED() { GPIOD->BSRR = GPIO_BSRR_BS_15; }
 
 void sendDit() {
     GPIOD->BSRR = GPIO_BSRR_BS_15;
@@ -102,9 +95,7 @@ bool USART6_SR_TC_status(void) {
 
     // if ((USART6->SR & USART_SR_TC) == (1 << 6)) {
     // if ((USART6->SR & USART_SR_TC) == 1) {
-    if (
-        (USART6->SR & USART_SR_TC) == 0
-        ) {
+    if ((USART6->SR & USART_SR_TC) == 0) {
         return 0;
     }
     return 1;
@@ -129,7 +120,6 @@ void do_the_thing(void) {
     }
 }
 
-
 void turn_on_LED_forever() {
     GPIOD->BSRR = GPIO_BSRR_BR_15;
     blinkDelayOffToOn();
@@ -142,7 +132,8 @@ void turn_OUT_LED_forever() {
     GPIOD->BSRR = GPIO_BSRR_BR_15;
 }
 
-//  # 30.6.1 Status register USART_SR  p. 1007 incl TC (bit 6) and TXE (bit //  7)
+//  # 30.6.1 Status register USART_SR  p. 1007 incl TC (bit 6) and TXE (bit //
+//  7)
 
 void houseOfCardsFnOutCharUSART(char c) {
     // kills port D somehow
@@ -174,7 +165,8 @@ void initUSART6(void) {
     // the source cited with 0x138 instead
     // USART6->BRR = 0x138;
     USART6->BRR = 0x8b; // 0x138;
-    //                                          USART6->BRR = 0x138; // saw something at 115200 today
+    //                                          USART6->BRR = 0x138; // saw
+    //                                          something at 115200 today
     // USART6->BRR = 0x8b;
     /* 115200 */ /* saw 0x8b or another value in .fs eforth source */
     USART6->CR1 |= USART_CR1_TE;
@@ -214,7 +206,7 @@ void evenSlower() {
 }
 
 void testUSART6SendingAA() {
-    for (int count = 144; count > 0; count--) {
+    for (int count = 36; count > 0; count--) {
         houseOfCardsFnOutCharUSART('a');
         // blink_once();
         // sendDitLongPause();
@@ -224,53 +216,74 @@ void testUSART6SendingAA() {
     }
 }
 
+void testUSART6SendingBB() {
+    for (int count = 4; count > 0; count--) {
+        houseOfCardsFnOutCharUSART('a');
+        houseOfCardsFnOutCharUSART('5');
+    }
+}
+
 void quickBlinks() {
-    for (int bln = 11; bln > 0; bln--) { blink_once(); }
+    for (int bln = 7; bln > 0; bln--) {
+        blink_once();
+    }
+}
+
+void stationIdent() {
+    oc(' ');
+    oc(' ');
+    oc(' ');
+    oc(' ');
+    oc(' ');
+    oc(' ');
+    oc(' ');
+    oc(' ');
+
+    oc('S');
+    oc('t');
+    oc('a');
+    oc('t');
+    oc('i');
+    oc('o');
+    oc('n');
+    oc(' ');
+    oc('i');
+    oc('d');
+    oc('e');
+    oc('n');
+    oc('t');
+    oc(' ');
+    oc(' ');
+    oc(' ');
+    oc(' ');
+    oc(' ');
+    oc(' ');
+    oc(' ');
+}
+
+void trillBlink(void) {
+    for (int blinks = 12; blinks > 0; blinks--) {
+        blink_once();
+    }
 }
 
 int main(void) {
     primary();
     quickBlinks();
-
     initUSART6();
+
     for (;;) {
         testUSART6SendingAA();
-        oc(' ');
-        oc(' ');
-        oc(' ');
-        oc(' ');
-
-        oc(' ');
-        oc(' ');
-        oc(' ');
-        oc(' ');
-
-        oc('S');
-        oc('t');
-        oc('a');
-        oc('t');
-        oc('i');
-        oc('o');
-        oc('n');
-        oc(' ');
-        oc('i');
-        oc('d');
-        oc('e');
-        oc('n');
-        oc('t');
-        oc(' ');
-        oc(' ');
-        oc(' ');
-        oc(' ');
-        oc(' ');
-        oc(' ');
-        oc(' ');
-        oc(' ');
-        // blink_once();
+        stationIdent();
+        testUSART6SendingBB();
+        // trillBlink();
+        // slower();
+        slowest();
+        // ldelayed();
     }
 
-
-    while(-1);
+    while (-1)
+        ;
     doLEDEarlyStuff();
     // turn_on_LED_forever();
     // while (-1) ;
@@ -279,7 +292,8 @@ int main(void) {
     // turn_on_LED_forever();
     ldelayed();
     monitor();
-    while (-1) ;
+    while (-1)
+        ;
     // ldelayed();
     return 0;
 }
