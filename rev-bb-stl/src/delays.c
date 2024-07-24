@@ -1,20 +1,29 @@
+/* delays.c */
+/* Wed 24 Jul 17:41:47 UTC 2024 */
 
-/****
- *
- * Thu 18 Jul 19:51:50 UTC 2024
- *
- */
-
+#if 0
 #include <stm32f4xx.h>
 #include <stm32f4xx_hal_gpio_ex.h>
 
-#define SLOW_CONST 3
+// anything using registers goes into main.c if reasonable
 
+
+
+#endif
 const int baseN = 55000;
 const int N = baseN * 4;
+#define SLOW_CONST 3
+#include <main.h>
+
 
 void blinkDelayOffToOn() {
     for (volatile int i = baseN; i > 0; i--) ;
+}
+
+void ditDelayOffToOn() {
+    for (volatile int i = (baseN * 128); i > 0; i--) {
+        blinkDelayOffToOn();
+    }
 }
 
 void slowing() {
@@ -39,8 +48,6 @@ void ldelayed() {
         slowest();
     }
 }
-
-extern void blink();
 
 void blink_once() {
     blink();
@@ -81,7 +88,7 @@ void sayHi() {
 void monitor(void) {
     for (;;) {
         blink_once();
-        for (int j = 7; j > 0; j--) { // was 2, and 3 not enough delay 0055z thu
+        for (int j = 4; j > 0; j--) { // 7 nice and long; 4 during tests.  was 2, and 3 not enough delay 0055z thu
             slowest();
         }
     }
