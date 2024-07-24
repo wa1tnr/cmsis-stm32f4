@@ -100,10 +100,14 @@ bool USART6_SR_TC_status(void) {
     // uint32_t fetchedSR_TC_bit = USART6->SR & USART_SR_TC;
     // if (fetchedSR_TC_bit == USART_SR_TC) { return 1; }
 
-    if ((USART6->SR & USART_SR_TC) == (1 << 6)) {
-        return 1;
+    // if ((USART6->SR & USART_SR_TC) == (1 << 6)) {
+    // if ((USART6->SR & USART_SR_TC) == 1) {
+    if (
+        (~(USART6->SR) & USART_SR_TC) == 0
+        ) {
+        return 0;
     }
-    return 0;
+    return 1;
 }
 
 void usart_wait_send_ready(uint32_t usart) {
@@ -143,9 +147,14 @@ void turn_OUT_LED_forever() {
 void houseOfCardsFnOutCharUSART(char c) {
     // kills port D somehow
     bool result = 0;
+    // FF AND USART6_DR !  outsent_TC? IF EXIT THEN
+    USART6->DR = c & 0xFF; // bang DR
     while (!result) {
         result = USART6_SR_TC_status();
+        // blink_once();
     }
+    // blink_once();
+    // blink_once();
 }
 
 void initUSART6(void) {
@@ -157,11 +166,14 @@ void initUSART6(void) {
 
     USART6->CR1 &= ~USART_CR1_UE;
 
-    USART6->CR1 |= USART_CR1_RE;
+    // USART6->CR1 |= USART_CR1_RE;
     // 0x8b for BRR if ting's reset clock
     // of iirc 8 MHz; otherwise follow
     // the source cited with 0x138 instead
-    USART6->BRR = 0x138;
+    // USART6->BRR = 0x138;
+    USART6->BRR = 0x8b; // 0x138;
+    //                                          USART6->BRR = 0x138; // saw something at 115200 today
+    // USART6->BRR = 0x8b;
     /* 115200 */ /* saw 0x8b or another value in .fs eforth source */
     USART6->CR1 |= USART_CR1_TE;
     USART6->CR1 |= USART_CR1_RE;
@@ -199,13 +211,37 @@ void evenSlower() {
     }
 }
 
+void testUSART6SendingAA() {
+    for (int count = 144; count > 0; count--) {
+        houseOfCardsFnOutCharUSART('a');
+        // blink_once();
+        // sendDitLongPause();
+        houseOfCardsFnOutCharUSART('5');
+        // blink_once();
+        // sendDitLongPause();
+    }
+}
+
+void quickBlinks() {
+    for (int bln = 11; bln > 0; bln--) { blink_once(); }
+}
+
 int main(void) {
     primary();
+    quickBlinks();
+
+    initUSART6();
+    for (;;) {
+        testUSART6SendingAA();
+        // blink_once();
+    }
+
+
+    while(-1);
     doLEDEarlyStuff();
     // turn_on_LED_forever();
     // while (-1) ;
     // turn_OUT_LED_forever();
-    initUSART6();
     // houseOfCardsFnOutCharUSART('a');
     // turn_on_LED_forever();
     ldelayed();

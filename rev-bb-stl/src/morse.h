@@ -15,6 +15,8 @@ extern void threeDahs();
 extern void morseSpace();
 #endif
 
+extern void sendDitLongPause();
+
 // at this build only one extern function required:
 extern void doLEDEarlyStuff();
 
