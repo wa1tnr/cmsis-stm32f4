@@ -103,7 +103,7 @@ bool USART6_SR_TC_status(void) {
     // if ((USART6->SR & USART_SR_TC) == (1 << 6)) {
     // if ((USART6->SR & USART_SR_TC) == 1) {
     if (
-        (~(USART6->SR) & USART_SR_TC) == 0
+        (USART6->SR & USART_SR_TC) == 0
         ) {
         return 0;
     }
