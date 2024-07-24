@@ -9,6 +9,7 @@
 
 
 all:
+	@./scripts.d/print_logo.sh
 	pio run
 
 monitor:
@@ -19,6 +20,9 @@ envdump:
 
 devlist:
 	pio device list
+
+numbered:
+	@echo "    make 2>&1 | less -N"
 
 term:
 	sleep 2; ./cf-fastpico9t /dev/ttyACM0
@@ -52,6 +56,7 @@ upload-shell_script_method:	./scripts.d/_upload_firmware_to_stm32f407disc-a.sh
 	@date
 	@echo
 	@echo
+	@./scripts.d/print_logo.sh
 	@./scripts.d/_upload_firmware_to_stm32f407disc-a.sh
 
 upload_xaa:	upload-unconf
