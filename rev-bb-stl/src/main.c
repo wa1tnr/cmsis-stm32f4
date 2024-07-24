@@ -157,6 +157,8 @@ void houseOfCardsFnOutCharUSART(char c) {
     // blink_once();
 }
 
+#define oc(a) houseOfCardsFnOutCharUSART(a)
+
 void initUSART6(void) {
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
     RCC->APB2ENR |= RCC_APB2ENR_USART6EN;
@@ -233,6 +235,37 @@ int main(void) {
     initUSART6();
     for (;;) {
         testUSART6SendingAA();
+        oc(' ');
+        oc(' ');
+        oc(' ');
+        oc(' ');
+
+        oc(' ');
+        oc(' ');
+        oc(' ');
+        oc(' ');
+
+        oc('S');
+        oc('t');
+        oc('a');
+        oc('t');
+        oc('i');
+        oc('o');
+        oc('n');
+        oc(' ');
+        oc('i');
+        oc('d');
+        oc('e');
+        oc('n');
+        oc('t');
+        oc(' ');
+        oc(' ');
+        oc(' ');
+        oc(' ');
+        oc(' ');
+        oc(' ');
+        oc(' ');
+        oc(' ');
         // blink_once();
     }
 
