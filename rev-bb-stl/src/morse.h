@@ -9,11 +9,18 @@ extern void sendDit();
 extern void sendDitsForever();
 extern void sendDitLongPause();
 extern void sendDahLongPause();
+#endif
+
 extern void sendMorseLtrR();
+extern void sendMorseLtrN();
+extern void sendMorseLtrO();
+
+#if 0
 extern void threeDits();
 extern void threeDahs();
-extern void morseSpace();
 #endif
+extern void sendMorseSpace();
+extern void sendMorseWSpace();
 
 extern void sendDitLongPause();
 

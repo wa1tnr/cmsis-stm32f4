@@ -51,6 +51,17 @@ void sendMorseLtrR() {
     sendDitLongPause();
 }
 
+void sendMorseLtrN() {
+    sendDahLongPause();
+    sendDitLongPause();
+}
+
+void sendMorseLtrO() {
+    for (int count = 3; count > 0; count--) {
+        sendDahLongPause();
+    }
+}
+
 void threeDits() {
     for (int dits = 3; dits > 0; dits--) {
         sendDitLongPause();
@@ -64,9 +75,16 @@ void threeDahs() {
     }
 }
 
-void morseSpace() {
+void sendMorseSpace() {
     for (int thisSlow = 9; thisSlow > 0; thisSlow--) {
         slowing();
+    }
+}
+
+void sendMorseWSpace() {
+    // between 'words' such as 'hello'
+    for (int iterations = 3; iterations > 0; iterations--) {
+        sendMorseSpace(); // want a fractional like 3.2 here ;)
     }
 }
 
@@ -74,41 +92,37 @@ void doLEDEarlyStuff() {
     resetBlueLED();
 
     threeDits();
-    morseSpace();
+    sendMorseSpace();
     threeDahs();
-    morseSpace();
+    sendMorseSpace();
     threeDits();
-    morseSpace();
+    sendMorseSpace();
 
 
-    morseSpace();
-    morseSpace();
-    morseSpace();
-    morseSpace();
-
-    sendMorseLtrR();
-    morseSpace();
-    sendMorseLtrR();
-    morseSpace();
-    sendMorseLtrR();
-    morseSpace();
-
-    morseSpace();
-    morseSpace();
-    morseSpace();
-    morseSpace();
-    morseSpace();
+    sendMorseSpace();
+    sendMorseSpace();
+    sendMorseSpace();
+    sendMorseSpace();
 
     sendMorseLtrR();
-    morseSpace();
+    sendMorseSpace();
+    sendMorseLtrR();
+    sendMorseSpace();
+    sendMorseLtrR();
+    sendMorseSpace();
+
+    sendMorseSpace();
+    sendMorseSpace();
+    sendMorseSpace();
+    sendMorseSpace();
+    sendMorseSpace();
+
+    sendMorseLtrR();
+    sendMorseSpace();
 
     monitor();
     sendDitsForever();
     while (-1) ;
 }
-
-// int main(void) {
-//    doLEDEarlyStuff();
-// }
 
 /* end. */
