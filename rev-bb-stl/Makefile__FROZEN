@@ -11,6 +11,7 @@
 all:
 	@./scripts.d/print_logo.sh
 	pio run
+	@cat ./scripts.d/show2K1Odyssey.txt 
 
 monitor:
 	pio run -t monitor
@@ -24,8 +25,9 @@ devlist:
 numbered:
 	@echo "    make 2>&1 | less -N"
 
+# cp2104 Friend - Adafruit - /dev/ttyUSB0 used:
 term:
-	sleep 2; ./cf-fastpico9t /dev/ttyACM0
+	sleep 2; ./cf-fastpico9t-black_pill /dev/ttyUSB0
 
 # https://docs.platformio.org/en/latest/core/userguide/pkg/cmd_exec.html
 
@@ -33,8 +35,12 @@ term:
 
 # @pio pkg exec --package "platformio/tool-dfuutil-arduino" -- <CMD> [ARGS]
 
+aardvark:
+	@cat ./scripts.d/showAardvark-a.txt
+
 erase:	./scripts.d/_erase_firmware_on_stm32f407disc-a.sh
 	@./scripts.d/_erase_firmware_on_stm32f407disc-a.sh
+	@cat ./scripts.d/showAardvark-a.txt
 
 # upload, not configured:
 
@@ -43,6 +49,10 @@ upload-unconf:
 
 upload-dl:	download
 
+lightbulb:
+	@cat ./scripts.d/showLightBulb.txt
+
+# TODO: next target has one script listed as a requirement -requires more scripts
 upload-shell_script_method:	./scripts.d/_upload_firmware_to_stm32f407disc-a.sh
 	@echo
 	@echo
@@ -58,6 +68,7 @@ upload-shell_script_method:	./scripts.d/_upload_firmware_to_stm32f407disc-a.sh
 	@echo
 	@./scripts.d/print_logo.sh
 	@./scripts.d/_upload_firmware_to_stm32f407disc-a.sh
+	@cat ./scripts.d/showLightBulb.txt
 
 upload_xaa:	upload-unconf
 .PHONY:	upload_xaa
@@ -113,4 +124,10 @@ clean:
 
 distclean: clean
 	rm -rf ./.pio
+
+discovery_ascii:
+	@cat ./scripts.d/show2K1Odyssey.txt 
+
+haha_ascii:
+	@./scripts.d/haha.sh
 
