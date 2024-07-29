@@ -1,0 +1,10 @@
+0.1.0-pre-alpha READY.FOR.RELEASE
+
+last commit 853142f015b348a124a6ea07416c3ae3727874b2
+
+Date:   Mon Jul 29 22:03:31 UTC 2024
+
+    add printLF remove unused code
+    
+      local environment actions on LF but will also
+      do just CR - ie LF alone acts like CR LF would.
