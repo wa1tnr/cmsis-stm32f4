@@ -16,7 +16,7 @@ cp -p showLightBulb.txt__FREEZE      showLightBulb.txt
 
 echo
 echo
-echo please manually cd ..  (change directory up one level)
+echo please manually cd ..  \(change directory up one level\)
 echo
 echo now type: ; echo
 
