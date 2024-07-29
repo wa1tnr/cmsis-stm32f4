@@ -82,10 +82,12 @@ void turn_OUT_LED_forever() {
 void outputCharUSART6(char c) {
     bool result = 0;
     USART6->DR = c & 0xFF; // bang DR
+    sloweInterChar();      // give it time - no flush avbl
     while (!result) {
         result = USART6_SR_TC_status();
     }
 }
+
 /****
  *
  * 0x8b for BRR if using C.H. Ting's reset clock of iirc 8 MHz
@@ -136,6 +138,9 @@ void sendMorseMsgNO() {
 
 char buffer[32];
 
+#define ASCII_CR 0x0d
+#define ASCII_LF 0x0a
+
 void printBufferToUSART6() {
     int bufCharCount = (sizeof buffer) / (sizeof buffer[0]);
 
@@ -145,47 +150,38 @@ void printBufferToUSART6() {
             return; // filter for nulls or garbage after
         }
 
+        if (buffer[arrayIndex] == ASCII_LF) {
+            oc('\n');
+            return;
+        }
+
         if (buffer[arrayIndex] > (char)0x1F) {
             oc(buffer[arrayIndex]);
         }
     }
 }
 
-/* not really a storage op: */
-void storeMessage() {
-    /* buy some time prior to picocom USART serial connection */
-    for (int sent = 5; sent > 0; sent--) {
-        sendMorseWSpace();
-    }
-
-    /* system seems to eat the first char sent so add one extra: */
+void printLF() {
     snprintf(buffer, sizeof buffer, "%c", '\n');
     printBufferToUSART6();
+}
 
+/* not really a storage op: */
+void storeMessage() {
     /* 24 char message: */
     snprintf(buffer, sizeof buffer, "%s", "How are they doing now?");
     /*                                     123456789012345678901234 */
 
     printBufferToUSART6();
+    printLF();
 
-    /* Old test code: */
-    if (buffer[7] == 'j') {
-        sendMorseMsgNO();
-        sendMorseMsgNO();
-    }
-
-    /* continue active code: */
-    for (int sent = 2; sent > 0; sent--) {
-        sendMorseWSpace();
-    }
-    for (int qblinks = 10; qblinks > 0; qblinks--) {
+    for (int qblinks = 3; qblinks > 0; qblinks--) {
         quickBlinks();
     }
-    sendMorseWSpace();
 }
 
 void lnthyWSpaceIval() {
-    for (int lwSpace = 5; lwSpace > 0; lwSpace--) {
+    for (int lwSpace = 2; lwSpace > 0; lwSpace--) {
         sendMorseWSpace();
     }
 }
@@ -193,8 +189,9 @@ void lnthyWSpaceIval() {
 int main(void) {
     primary();
     quickBlinks();
-    sendMorseSpace();
     initUSART6();
+    printLF();
+    storeMessage();
     storeMessage();
     lnthyWSpaceIval();
     while (-1) {
