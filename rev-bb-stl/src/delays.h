@@ -1,9 +1,10 @@
 /* delays.h */
-/* Wed 24 Jul 17:41:47 UTC 2024 */
+/* Mon 29 Jul 19:20:53 UTC 2024 */
 
 extern void blink_once();
 extern void slowing();
 extern void slower();
+extern void evenSlower();
 extern void slowest();
 extern void blinkDelayOffToOn();
 extern void ditDelayOffToOn();
