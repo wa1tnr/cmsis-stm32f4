@@ -6,10 +6,18 @@
 #include <stm32f4xx_hal_gpio_ex.h>
 #endif
 
+const int iCharN = 4095;
+
 const int baseN = 55000;
 const int N = baseN * 4;
 #define SLOW_CONST 3
 #include <main.h>
+
+void sloweInterChar() {
+    for (volatile int i = iCharN; i > 0; i--) {
+        ;
+    }
+}
 
 void blinkDelayOffToOn() {
     for (volatile int i = baseN; i > 0; i--)

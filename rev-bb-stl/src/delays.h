@@ -6,6 +6,7 @@ extern void slowing();
 extern void slower();
 extern void evenSlower();
 extern void slowest();
+extern void sloweInterChar();
 extern void blinkDelayOffToOn();
 extern void ditDelayOffToOn();
 extern void payloadCountedLoop(int count);
