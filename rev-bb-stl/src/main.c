@@ -1,5 +1,5 @@
 /* main.c */
-/* Mon 29 Jul 19:20:53 UTC 2024 */
+/* Thu  1 Aug 02:02:23 UTC 2024 */
 
 /* USART6 enable and write-only (no listener) */
 /* port:  Forth source to C language */
@@ -7,8 +7,7 @@
 /* utilise: CMSIS notation and paradigm */
 
 /****
- * PD15  LD6  Blue
- ***/
+ * PD15  LD6  Blue ***/
 
 #include <delays.h>
 #include <morse.h>
@@ -41,26 +40,6 @@ void GPIOD_MODER_bang(void) {
     GPIOD->MODER |= GPIO_MODER_MODER15_0;
 }
 
-/***
- *
- * return TXE set saying got shifted out
- *
- * TC is transmission complete and says that message
- * was sent out the USART, and that TXE is set.
- * [garbled; lost text here] .. happens
- * '... and if TXE is set' so that is firmly implied
- * (TC by itself may be enough;
- * or perhaps TXE will be inspected here and there)
- *
- ***/
-
-bool USART6_SR_TC_status(void) {
-    if ((USART6->SR & USART_SR_TC) == 0) {
-        return 0;
-    }
-    return 1;
-}
-
 void turn_on_LED_forever() {
     GPIOD->BSRR = GPIO_BSRR_BR_15;
     blinkDelayOffToOn();
@@ -79,10 +58,26 @@ void turn_OUT_LED_forever() {
  *
  ***/
 
+bool USART6_SR_TXE_status(void) {
+    if ((USART6->SR & USART_SR_TXE == USART_SR_TXE)) {
+        return 0;
+    }
+    return 1;
+}
+
+bool USART6_SR_TC_status(void) {
+    if ((USART6->SR & USART_SR_TC) == USART_SR_TC) {
+        return 1;
+    }
+    return 0;
+}
+
 void outputCharUSART6(char c) {
     bool result = 0;
+    // while (!result) { result = USART6_SR_TXE_status(); }
     USART6->DR = c & 0xFF; // bang DR
     sloweInterChar();      // give it time - no flush avbl
+    result = 0;
     while (!result) {
         result = USART6_SR_TC_status();
     }
@@ -106,6 +101,7 @@ void initUSART6(void) {
     USART6->CR1 &= ~USART_CR1_UE;
 
     USART6->BRR = 0x8b; // 0x138;
+
     USART6->CR1 |= USART_CR1_TE;
     USART6->CR1 |= USART_CR1_RE;
     USART6->CR1 |= USART_CR1_UE;
@@ -190,20 +186,18 @@ int main(void) {
     primary();
     quickBlinks();
     initUSART6();
-    printLF();
+    // printLF();
     storeMessage();
     storeMessage();
     lnthyWSpaceIval();
-    while (-1) {
-        quickBlinks();
-    }
-
-    /* blocked from exec: */
-    doLEDEarlyStuff();
     ldelayed();
     monitor();
     while (-1)
         ;
+    doLEDEarlyStuff();
+    while (-1) {
+        quickBlinks();
+    }
     return 0;
 }
 
