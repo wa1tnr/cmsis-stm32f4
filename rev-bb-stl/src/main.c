@@ -1,5 +1,5 @@
 /* main.c */
-/* Thu  1 Aug 21:48:31 UTC 2024 */
+/* Thu  1 Aug 22:14:14 UTC 2024 */
 
 /* USART6 enable and write-only (no listener) */
 /* port:  Forth source to C language */
@@ -60,14 +60,13 @@ void outputCharUSART6(char c) {
         result = ((USART6->SR & USART_SR_TXE) == USART_SR_TXE);
     }
     USART6->DR = c & 0xFF;
-    // sloweInterChar();      // give it time - no flush avbl
     result = 0;
     while (!result) {
         result = ((USART6->SR & USART_SR_TC) == USART_SR_TC);
     }
 }
 
-void primary(void) {
+void initGPIO(void) {
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
     GPIOD->MODER |= GPIO_MODER_MODER15_0;
     GPIOD->OTYPER = 0;
@@ -87,7 +86,6 @@ void initUSART6(void) {
     while (!result) {
         result = ((USART6->SR & USART_SR_TXE) == USART_SR_TXE);
     }
-
     USART6->CR1 |= USART_CR1_TE;
     USART6->CR1 |= USART_CR1_RE;
     USART6->CR1 |= USART_CR1_UE;
@@ -134,7 +132,7 @@ void printLF() {
     printBufferToUSART6();
 }
 
-void storeMessage() {
+void printTestMessage() {
     snprintf(buffer, sizeof buffer, "%s", "How are they doing now?");
     printBufferToUSART6();
     printLF();
@@ -150,11 +148,11 @@ void lnthyWSpaceIval() {
 }
 
 int main(void) {
-    primary();
+    initGPIO();
     quickBlinks();
     initUSART6();
-    storeMessage();
-    storeMessage();
+    printTestMessage();
+    printTestMessage();
     lnthyWSpaceIval();
     ldelayed();
     monitor();
