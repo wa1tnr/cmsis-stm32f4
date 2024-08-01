@@ -1,5 +1,5 @@
 /* main.c */
-/* Thu  1 Aug 02:02:23 UTC 2024 */
+/* Thu  1 Aug 16:40:05 UTC 2024 */
 
 /* USART6 enable and write-only (no listener) */
 /* port:  Forth source to C language */
@@ -12,8 +12,9 @@
 #include <delays.h>
 #include <morse.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <stm32f4xx.h>
+// provides snprintf: stdio.h
+#include <stdio.h>
 
 /* ref. https://stackoverflow.com/questions/59546305/stm32f103-gpio-ports */
 /* RCC_APB2ENR  112, 146    GPIOx_CRH  172 */
@@ -59,10 +60,7 @@ void turn_OUT_LED_forever() {
  ***/
 
 bool USART6_SR_TXE_status(void) {
-    if ((USART6->SR & USART_SR_TXE == USART_SR_TXE)) {
-        return 0;
-    }
-    return 1;
+    return ((USART6->SR & USART_SR_TXE) == USART_SR_TXE);
 }
 
 bool USART6_SR_TC_status(void) {
@@ -74,7 +72,10 @@ bool USART6_SR_TC_status(void) {
 
 void outputCharUSART6(char c) {
     bool result = 0;
-    // while (!result) { result = USART6_SR_TXE_status(); }
+    // TODO: avoid 'while' loops ENTIRELY:
+    while (!result) {
+        result = USART6_SR_TXE_status();
+    }
     USART6->DR = c & 0xFF; // bang DR
     sloweInterChar();      // give it time - no flush avbl
     result = 0;
@@ -86,9 +87,6 @@ void outputCharUSART6(char c) {
 /****
  *
  * 0x8b for BRR if using C.H. Ting's reset clock of iirc 8 MHz
- * otherwise follow the source cited with 0x138 instead.
- *
- *     USART6->BRR = 0x138;
  *
  ***/
 
@@ -99,9 +97,7 @@ void initUSART6(void) {
     GPIOC->AFR[0] |=
         (0x8UL << GPIO_AFRL_AFSEL6_Pos) | (0x8UL << GPIO_AFRL_AFSEL7_Pos);
     USART6->CR1 &= ~USART_CR1_UE;
-
     USART6->BRR = 0x8b; // 0x138;
-
     USART6->CR1 |= USART_CR1_TE;
     USART6->CR1 |= USART_CR1_RE;
     USART6->CR1 |= USART_CR1_UE;
@@ -139,18 +135,14 @@ char buffer[32];
 
 void printBufferToUSART6() {
     int bufCharCount = (sizeof buffer) / (sizeof buffer[0]);
-
     for (int arrayIndex = 0; arrayIndex < bufCharCount; arrayIndex++) {
-
         if (buffer[arrayIndex] == '\0') {
             return; // filter for nulls or garbage after
         }
-
         if (buffer[arrayIndex] == ASCII_LF) {
             oc('\n');
             return;
         }
-
         if (buffer[arrayIndex] > (char)0x1F) {
             oc(buffer[arrayIndex]);
         }
@@ -162,15 +154,10 @@ void printLF() {
     printBufferToUSART6();
 }
 
-/* not really a storage op: */
 void storeMessage() {
-    /* 24 char message: */
     snprintf(buffer, sizeof buffer, "%s", "How are they doing now?");
-    /*                                     123456789012345678901234 */
-
     printBufferToUSART6();
     printLF();
-
     for (int qblinks = 3; qblinks > 0; qblinks--) {
         quickBlinks();
     }
@@ -186,7 +173,6 @@ int main(void) {
     primary();
     quickBlinks();
     initUSART6();
-    // printLF();
     storeMessage();
     storeMessage();
     lnthyWSpaceIval();
