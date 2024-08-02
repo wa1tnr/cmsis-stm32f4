@@ -1,0 +1,15 @@
+Mon 29 Jul 15:43:37 UTC 2024
+
+Any files named something__FREEZE are meant to be copied over to
+the same filename, minus the last part ('__FREEZE') for daily use
+(if wanted/needed).
+
+The purpose is to have an older or stable version checked into
+the repository, while permitting more recent edits to be present,
+but not checked in.
+
+It is a nuisance to have them present that way, so the work-around
+is to git mv oldfile oldfile__FREEZE to clear the git status of
+nagging unimportant edit notices.
+
+

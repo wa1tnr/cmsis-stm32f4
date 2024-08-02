@@ -1,0 +1,133 @@
+# Makefile__FROZEN
+# Wed 17 Jul 00:32:54 UTC 2024
+
+#  blackpill_f411ce   STM32F411CEU6   100MHz   512KB   128KB   WeAct Studio BlackPill V2.0 (STM32F411CE)
+#  pio project init --board blackpill_f411ce
+
+# disco_f407vg   STM32F407VGT6   168MHz   1MB   128KB   ST STM32F4DISCOVERY
+#  pio project init --board disco_f407vg
+
+
+all:
+	@./scripts.d/print_logo.sh
+	pio run
+	@cat ./scripts.d/show2K1Odyssey.txt 
+
+monitor:
+	pio run -t monitor
+
+envdump:
+	@pio run --target envdump
+
+devlist:
+	pio device list
+
+numbered:
+	@echo "    make 2>&1 | less -N"
+
+# cp2104 Friend - Adafruit - /dev/ttyUSB0 used:
+term:
+	sleep 2; ./cf-fastpico9t-black_pill /dev/ttyUSB0
+
+# https://docs.platformio.org/en/latest/core/userguide/pkg/cmd_exec.html
+
+# OPTION:  bypass platformio for dfu-util:
+
+# @pio pkg exec --package "platformio/tool-dfuutil-arduino" -- <CMD> [ARGS]
+
+aardvark:
+	@cat ./scripts.d/showAardvark-a.txt
+
+erase:	./scripts.d/_erase_firmware_on_stm32f407disc-a.sh
+	@./scripts.d/_erase_firmware_on_stm32f407disc-a.sh
+	@cat ./scripts.d/showAardvark-a.txt
+
+# upload, not configured:
+
+upload-unconf:
+	@pio run -t upload
+
+upload-dl:	download
+
+lightbulb:
+	@cat ./scripts.d/showLightBulb.txt
+
+# TODO: next target has one script listed as a requirement -requires more scripts
+upload-shell_script_method:	./scripts.d/_upload_firmware_to_stm32f407disc-a.sh
+	@echo
+	@echo
+	@date
+	@echo
+	@echo attempt to use shell script
+	@echo
+	@echo
+	@pio run # new experiment
+	@echo
+	@date
+	@echo
+	@echo
+	@./scripts.d/print_logo.sh
+	@./scripts.d/_upload_firmware_to_stm32f407disc-a.sh
+	@cat ./scripts.d/showLightBulb.txt
+
+upload_xaa:	upload-unconf
+.PHONY:	upload_xaa
+
+upload:	upload-shell_script_method
+.PHONY:	upload
+
+dfu-upload:
+	@dfu-util --detach -a 0 --dfuse-address 0x08000000:leave -D .pio/build/disco_f407vg/firmware.bin
+
+dfu-util-list:
+	@pio pkg exec --package "platformio/tool-dfuutil-arduino" -- dfu-util --list 
+
+### Found DFU: [0483:df11] ver=2200, devnum=7, cfg=1, intf=0, path="1-9", alt=0, name="@Internal Flash  /0x08000000/04*016Kg,01*064Kg,03*128Kg", serial="ABCDEF012345"
+
+dfu-util-help:
+	@pio pkg exec --package "platformio/tool-dfuutil-arduino" -- dfu-util --help
+
+BUILT_FIRMWARE=./.pio/build/blackpill_f411ce/firmware.bin
+
+# download has no experiments to use the target after firmware upload DFU:
+
+download:
+	@pio pkg exec --package "platformio/tool-dfuutil-arduino" -- \
+		dfu-util --detach --alt 0 --dfuse-address 0x08000000 \
+		--download ${BUILT_FIRMWARE}
+
+upgrade:
+	pio upgrade
+
+# https://docs.platformio.org/en/latest/core/userguide/pkg/cmd_update.html#cmd-pkg-update
+
+pkgupdate:
+	pio pkg update
+
+pkglist:
+	pio pkg list
+
+# https://docs.platformio.org/en/latest/core/userguide/pkg/cmd_outdated.html#cmd-pkg-outdated
+
+outdated:
+	pio pkg outdated
+
+git_status:
+	@git status | cat | tr -d '\t'
+
+pwd:
+	@echo -n '  ..'
+	@pwd | cut -b 27-
+
+clean:
+	pio run -t clean
+
+distclean: clean
+	rm -rf ./.pio
+
+discovery_ascii:
+	@cat ./scripts.d/show2K1Odyssey.txt 
+
+haha_ascii:
+	@./scripts.d/haha.sh
+

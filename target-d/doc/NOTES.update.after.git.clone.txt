@@ -1,0 +1,17 @@
+
+ $ cd cmsis-stm32f4/rev-bb-stl
+ $ git status
+
+Untracked files:
+
+	Makefile
+	scripts.d/show2K1Odyssey.txt
+	scripts.d/showAardvark-a.txt
+	scripts.d/showFancyChicken.txt
+	scripts.d/showLightBulb.txt
+
+All of those are usually populated after a fresh git clone,
+by the end user (see scripts.d/quick_script_updates.sh for
+most of that).
+
+Mon 29 Jul 17:29:42 UTC 2024
