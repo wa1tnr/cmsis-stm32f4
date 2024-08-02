@@ -1,5 +1,5 @@
 /* main.c */
-/* Thu  1 Aug 22:14:14 UTC 2024 */
+/* Fri  2 Aug 20:46:28 UTC 2024 */
 
 /* USART6 enable and write-only (no listener) */
 /* port:  Forth source to C language */
