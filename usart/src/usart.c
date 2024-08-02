@@ -1,4 +1,4 @@
-/* main.c */
+/* usart.c */
 /* Fri  2 Aug 20:46:28 UTC 2024 */
 
 /* USART6 enable and write-only (no listener) */
@@ -146,24 +146,6 @@ void lnthyWSpaceIval() {
     for (int lwSpace = 2; lwSpace > 0; lwSpace--) {
         sendMorseWSpace();
     }
-}
-
-int main(void) {
-    initGPIO();
-    quickBlinks();
-    initUSART6();
-    printTestMessage();
-    printTestMessage();
-    lnthyWSpaceIval();
-    ldelayed();
-    monitor();
-    while (-1)
-        ;
-    doLEDEarlyStuff();
-    while (-1) {
-        quickBlinks();
-    }
-    return 0;
 }
 
 /* end. */
