@@ -133,8 +133,9 @@ void printLF() {
 }
 
 void printTestMessage() {
-    // snprintf(buffer, sizeof buffer, "%s", "How are they doing now?");
-    snprintf(buffer, sizeof buffer, "%s", " NEW usart directory 19:47z");
+    snprintf(buffer, sizeof buffer, "%s", " NEW usart directory ");
+    printBufferToUSART6();
+    snprintf(buffer, sizeof buffer, "%s", "NOW kertaif 21:21z");
     printBufferToUSART6();
     printLF();
     for (int qblinks = 3; qblinks > 0; qblinks--) {
