@@ -1,5 +1,5 @@
 /* main.c */
-/* Fri  2 Aug 20:46:28 UTC 2024 */
+/* Sat  3 Aug 16:48:19 UTC 2024 */
 
 /* USART6 enable and write-only (no listener) */
 /* port:  Forth source to C language */
@@ -9,16 +9,9 @@
 /****
  * PD15  LD6  Blue ***/
 
-#include <delays.h>
-#include <morse.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stm32f4xx.h>
-#include <usart.h>
-
 /* ref. https://stackoverflow.com/questions/59546305/stm32f103-gpio-ports */
 /* RCC_APB2ENR  112, 146    GPIOx_CRH  172 */
-
+#include <main.h>
 #define oc(a) outputCharUSART6(a)
 #define ASCII_CR 0x0d
 #define ASCII_LF 0x0a
