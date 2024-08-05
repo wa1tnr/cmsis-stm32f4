@@ -1,13 +1,10 @@
 /* usart.c */
-/* Fri  2 Aug 20:46:28 UTC 2024 */
+/* Mon  5 Aug 01:36:14 UTC 2024 */
 
 /* USART6 enable and write-only (no listener) */
 /* port:  Forth source to C language */
 
 /* utilise: CMSIS notation and paradigm */
-
-/****
- * PD15  LD6  Blue ***/
 
 #include <delays.h>
 #include <morse.h>
@@ -19,14 +16,19 @@
 /* RCC_APB2ENR  112, 146    GPIOx_CRH  172 */
 
 #define oc(a) outputCharUSART6(a)
+#define printBuffer(a) printBufferToUSART6(a)
 #define ASCII_CR 0x0d
 #define ASCII_LF 0x0a
 
 char buffer[32];
 
-void resetBlueLED() { GPIOD->BSRR = GPIO_BSRR_BR_15; }
+void resetBlueLED() {
+    GPIOD->BSRR = GPIO_BSRR_BR_15;
+}
 
-void setBlueLED() { GPIOD->BSRR = GPIO_BSRR_BS_15; }
+void setBlueLED() {
+    GPIOD->BSRR = GPIO_BSRR_BS_15;
+}
 
 void sendDit() {
     GPIOD->BSRR = GPIO_BSRR_BS_15;
@@ -55,7 +57,6 @@ void turn_OUT_LED_forever() {
 /* 30.6.1 Status register USART_SR  p. 1007 incl TC (bit 6) and TXE (bit 7) */
 void outputCharUSART6(char c) {
     bool result = 0;
-    // TODO: avoid 'while' loops ENTIRELY:
     while (!result) {
         result = ((USART6->SR & USART_SR_TXE) == USART_SR_TXE);
     }
@@ -111,7 +112,7 @@ void sendMorseMsgNO() {
     sendMorseWSpace();
 }
 
-void printBufferToUSART6() {
+void printBufferToUSART6Old() {
     int bufCharCount = (sizeof buffer) / (sizeof buffer[0]);
     for (int arrayIndex = 0; arrayIndex < bufCharCount; arrayIndex++) {
         if (buffer[arrayIndex] == '\0') {
@@ -127,20 +128,45 @@ void printBufferToUSART6() {
     }
 }
 
-void printLF() {
-    snprintf(buffer, sizeof buffer, "%c", '\n');
-    printBufferToUSART6();
+void printBufferToUSART6(char *inputBuffer) {
+    while (*inputBuffer) {
+        if (*inputBuffer == '\0') {
+            return;
+        }
+        if (*inputBuffer == ASCII_LF) {
+            oc('\n');
+            return;
+        }
+        if (*inputBuffer > (char)0x1F) {
+            oc(*inputBuffer++);
+        }
+    }
 }
 
-void printTestMessage() {
-    snprintf(buffer, sizeof buffer, "%s", " NEW usart directory ");
-    printBufferToUSART6();
-    snprintf(buffer, sizeof buffer, "%s", "NOW kertaif 21:21z");
-    printBufferToUSART6();
-    printLF();
+void printLF() {
+    snprintf(buffer, sizeof buffer, "%c", '\n');
+    printBuffer(buffer);
+}
+
+void threeQBlinks(void) {
     for (int qblinks = 3; qblinks > 0; qblinks--) {
         quickBlinks();
     }
+}
+
+void printTestMessage() {
+
+    snprintf(buffer, sizeof buffer, "%s", " printBuffer(buffer)");
+    printBuffer(buffer);
+
+    snprintf(buffer, sizeof buffer, "%s", " in use: ");
+    printBuffer(buffer);
+
+    snprintf(buffer, sizeof buffer, "%s", " telnavika  01:35z");
+    printBuffer(buffer);
+
+    printLF();
+    /* threeQBlinks(); */
 }
 
 void lnthyWSpaceIval() {
