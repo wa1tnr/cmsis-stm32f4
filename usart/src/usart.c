@@ -6,22 +6,27 @@
 
 /* utilise: CMSIS notation and paradigm */
 
-#include <delays.h>
+#if 0
 #include <morse.h>
+#endif
+#include <delays.h>
+#include <stm32f4xx.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <stm32f4xx.h>
 
 /* ref. https://stackoverflow.com/questions/59546305/stm32f103-gpio-ports */
 /* RCC_APB2ENR  112, 146    GPIOx_CRH  172 */
 
-#define oc(a) outputCharUSART6(a)
 #define printBuffer(a) printBufferToUSART6(a)
+#if 0
 #define ASCII_CR 0x0d
+#endif
+#define oc(a) outputCharUSART6(a)
 #define ASCII_LF 0x0a
 
 char buffer[32];
 
+#if 0
 void resetBlueLED() {
     GPIOD->BSRR = GPIO_BSRR_BR_15;
 }
@@ -53,6 +58,7 @@ void turn_OUT_LED_forever() {
     blinkDelayOffToOn();
     GPIOD->BSRR = GPIO_BSRR_BR_15;
 }
+#endif
 
 /* 30.6.1 Status register USART_SR  p. 1007 incl TC (bit 6) and TXE (bit 7) */
 void outputCharUSART6(char c) {
@@ -67,12 +73,14 @@ void outputCharUSART6(char c) {
     }
 }
 
+#if 0
 void initGPIO(void) {
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
     GPIOD->MODER |= GPIO_MODER_MODER15_0;
     GPIOD->OTYPER = 0;
     GPIOD->OSPEEDR = 0;
 }
+#endif
 
 /* 0x8b for BRR if using C.H. Ting's reset clock of iirc 8 MHz */
 void initUSART6(void) {
@@ -92,6 +100,7 @@ void initUSART6(void) {
     USART6->CR1 |= USART_CR1_UE;
 }
 
+#if 0
 void blink() {
     GPIOD->BSRR = GPIO_BSRR_BS_15;
     blinkDelayOffToOn();
@@ -111,6 +120,7 @@ void sendMorseMsgNO() {
     sendMorseSpace();
     sendMorseWSpace();
 }
+#endif
 
 void printBufferToUSART6Old() {
     int bufCharCount = (sizeof buffer) / (sizeof buffer[0]);
@@ -148,11 +158,13 @@ void printLF() {
     printBuffer(buffer);
 }
 
+#if 0
 void threeQBlinks(void) {
     for (int qblinks = 3; qblinks > 0; qblinks--) {
         quickBlinks();
     }
 }
+#endif
 
 void printTestMessage() {
 
@@ -169,10 +181,12 @@ void printTestMessage() {
     /* threeQBlinks(); */
 }
 
+#if 0
 void lnthyWSpaceIval() {
     for (int lwSpace = 2; lwSpace > 0; lwSpace--) {
         sendMorseWSpace();
     }
 }
+#endif
 
 /* end. */

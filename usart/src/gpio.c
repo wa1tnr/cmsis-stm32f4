@@ -1,26 +1,28 @@
-/* usart.c */
-/* Mon  5 Aug 01:36:14 UTC 2024 */
+/* gpio.c */
+/* Mon  5 Aug 23:32:37 UTC 2024 */
 
 /* USART6 enable and write-only (no listener) */
 /* port:  Forth source to C language */
 
 /* utilise: CMSIS notation and paradigm */
 
-#include <delays.h>
-#include <morse.h>
+#if 0
 #include <stdbool.h>
 #include <stdio.h>
+#endif
 #include <stm32f4xx.h>
+#include <delays.h>
+#include <morse.h>
 
 /* ref. https://stackoverflow.com/questions/59546305/stm32f103-gpio-ports */
 /* RCC_APB2ENR  112, 146    GPIOx_CRH  172 */
 
+#if 0
 #define oc(a) outputCharUSART6(a)
 #define printBuffer(a) printBufferToUSART6(a)
 #define ASCII_CR 0x0d
 #define ASCII_LF 0x0a
-
-char buffer[32];
+#endif
 
 void resetBlueLED() {
     GPIOD->BSRR = GPIO_BSRR_BR_15;
@@ -55,6 +57,7 @@ void turn_OUT_LED_forever() {
 }
 
 /* 30.6.1 Status register USART_SR  p. 1007 incl TC (bit 6) and TXE (bit 7) */
+#if 0
 void outputCharUSART6(char c) {
     bool result = 0;
     while (!result) {
@@ -66,6 +69,7 @@ void outputCharUSART6(char c) {
         result = ((USART6->SR & USART_SR_TC) == USART_SR_TC);
     }
 }
+#endif
 
 void initGPIO(void) {
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
@@ -75,6 +79,7 @@ void initGPIO(void) {
 }
 
 /* 0x8b for BRR if using C.H. Ting's reset clock of iirc 8 MHz */
+#if 0
 void initUSART6(void) {
     bool result = 0;
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
@@ -91,6 +96,7 @@ void initUSART6(void) {
     USART6->CR1 |= USART_CR1_RE;
     USART6->CR1 |= USART_CR1_UE;
 }
+#endif
 
 void blink() {
     GPIOD->BSRR = GPIO_BSRR_BS_15;
@@ -111,7 +117,7 @@ void sendMorseMsgNO() {
     sendMorseSpace();
     sendMorseWSpace();
 }
-
+#if 0
 void printBufferToUSART6Old() {
     int bufCharCount = (sizeof buffer) / (sizeof buffer[0]);
     for (int arrayIndex = 0; arrayIndex < bufCharCount; arrayIndex++) {
@@ -147,6 +153,7 @@ void printLF() {
     snprintf(buffer, sizeof buffer, "%c", '\n');
     printBuffer(buffer);
 }
+#endif
 
 void threeQBlinks(void) {
     for (int qblinks = 3; qblinks > 0; qblinks--) {
@@ -154,6 +161,7 @@ void threeQBlinks(void) {
     }
 }
 
+#if 0
 void printTestMessage() {
 
     snprintf(buffer, sizeof buffer, "%s", " printBuffer(buffer)");
@@ -168,6 +176,7 @@ void printTestMessage() {
     printLF();
     /* threeQBlinks(); */
 }
+#endif
 
 void lnthyWSpaceIval() {
     for (int lwSpace = 2; lwSpace > 0; lwSpace--) {
