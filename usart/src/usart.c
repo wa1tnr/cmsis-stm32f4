@@ -49,22 +49,6 @@ void initUSART6(void) {
     USART6->CR1 |= USART_CR1_UE;
 }
 
-void printBufferToUSART6Old() {
-    int bufCharCount = (sizeof buffer) / (sizeof buffer[0]);
-    for (int arrayIndex = 0; arrayIndex < bufCharCount; arrayIndex++) {
-        if (buffer[arrayIndex] == '\0') {
-            return; // filter for nulls or garbage after
-        }
-        if (buffer[arrayIndex] == ASCII_LF) {
-            oc('\n');
-            return;
-        }
-        if (buffer[arrayIndex] > (char)0x1F) {
-            oc(buffer[arrayIndex]);
-        }
-    }
-}
-
 void printBufferToUSART6(char *inputBuffer) {
     while (*inputBuffer) {
         if (*inputBuffer == '\0') {
@@ -93,7 +77,7 @@ void printTestMessage() {
     snprintf(buffer, sizeof buffer, "%s", " in use: ");
     printBuffer(buffer);
 
-    snprintf(buffer, sizeof buffer, "%s", " fenewalde tekne   20:08z");
+    snprintf(buffer, sizeof buffer, "%s", " fenewalde sparta   20:08z  w removed code");
 
     /***
      *
