@@ -27,11 +27,6 @@ void sendDit() {
     ditDelayOffToOn();
 }
 
-void GPIOD_MODER_bang(void) {
-    /* PD15 is Blue LED - all 4x on PORT D pins 12-15 */
-    GPIOD->MODER |= GPIO_MODER_MODER15_0;
-}
-
 void turn_on_LED_forever() {
     GPIOD->BSRR = GPIO_BSRR_BR_15;
     blinkDelayOffToOn();
