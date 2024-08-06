@@ -1,5 +1,5 @@
 /* gpio.c */
-/* Mon  5 Aug 23:32:37 UTC 2024 */
+/* Tue  6 Aug 00:23:18 UTC 2024 */
 
 /* port:  Forth source to C language */
 
@@ -74,12 +74,6 @@ void sendMorseMsgNO() {
 void threeQBlinks(void) {
     for (int qblinks = 3; qblinks > 0; qblinks--) {
         quickBlinks();
-    }
-}
-
-void lnthyWSpaceIval() {
-    for (int lwSpace = 2; lwSpace > 0; lwSpace--) {
-        sendMorseWSpace();
     }
 }
 

@@ -92,7 +92,7 @@ void printTestMessage() {
     snprintf(buffer, sizeof buffer, "%s", " in use: ");
     printBuffer(buffer);
 
-    snprintf(buffer, sizeof buffer, "%s", " telnavika  01:35z");
+    snprintf(buffer, sizeof buffer, "%s", " tupelo honi 00:28z");
     printBuffer(buffer);
 
     printLF();

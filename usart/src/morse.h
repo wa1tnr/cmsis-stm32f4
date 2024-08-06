@@ -1,5 +1,5 @@
 /* morse.h */
-/* Sat  3 Aug 16:48:19 UTC 2024 */
+/* Tue  6 Aug 00:23:18 UTC 2024 */
 
 #ifndef MORSE_HEADER_FILE
 #define MORSE_HEADER_FILE
@@ -10,6 +10,7 @@ extern void sendMorseSpace();
 extern void sendMorseWSpace();
 extern void sendDitLongPause();
 extern void doLEDEarlyStuff();
+extern void lnthyWSpaceIval();
 #endif
 
 /* end. */

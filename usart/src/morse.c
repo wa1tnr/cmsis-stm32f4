@@ -1,5 +1,5 @@
 /* morse.c */
-/* Wed 24 Jul 17:41:47 UTC 2024 */
+/* Tue  6 Aug 00:23:18 UTC 2024 */
 
 #if 0
 #include <stm32f4xx.h>
@@ -85,6 +85,12 @@ void sendMorseWSpace() {
     // between 'words' such as 'hello'
     for (int iterations = 3; iterations > 0; iterations--) {
         sendMorseSpace(); // want a fractional like 3.2 here ;)
+    }
+}
+
+void lnthyWSpaceIval() {
+    for (int lwSpace = 2; lwSpace > 0; lwSpace--) {
+        sendMorseWSpace();
     }
 }
 
