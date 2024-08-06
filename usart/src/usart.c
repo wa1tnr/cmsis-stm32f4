@@ -1,5 +1,5 @@
 /* usart.c */
-/* Tue  6 Aug 15:05:17 UTC 2024 */
+/* Tue  6 Aug 20:08:08 UTC 2024 */
 
 /* USART6 enable and write-only (no listener) */
 /* port:  Forth source to C language */
@@ -93,7 +93,7 @@ void printTestMessage() {
     snprintf(buffer, sizeof buffer, "%s", " in use: ");
     printBuffer(buffer);
 
-    snprintf(buffer, sizeof buffer, "%s", " runewelde darbunci 16:53z");
+    snprintf(buffer, sizeof buffer, "%s", " fenewalde tekne   20:08z");
 
     /***
      *
