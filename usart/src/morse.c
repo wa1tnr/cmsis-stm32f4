@@ -5,19 +5,9 @@
 #include <stm32f4xx.h>
 #include <stm32f4xx_hal_gpio_ex.h>
 #endif
+
 #include <delays.h>
 #include <main.h>
-
-// #include <main.h>
-// #define SLOW_CONST 3
-// const int baseN = 55000;
-// const int N = baseN * 4;
-
-// void resetBlueLED() { GPIOD->BSRR = GPIO_BSRR_BR_15; }
-// void setBlueLED() { GPIOD->BSRR = GPIO_BSRR_BS_15; }
-
-// void sendDit(); // main.c
-// void sendDit() { GPIOD->BSRR = GPIO_BSRR_BS_15; ditDelayOffToOn(); GPIOD->BSRR = GPIO_BSRR_BR_15; ditDelayOffToOn(); }
 
 void sendDitsForever() {
     for (;;) {
@@ -66,7 +56,6 @@ void threeDits() {
     for (int dits = 3; dits > 0; dits--) {
         sendDitLongPause();
     }
-
 }
 
 void threeDahs() {
@@ -99,36 +88,33 @@ void doLEDEarlyStuff() {
 
     threeDits();
     sendMorseSpace();
+
     threeDahs();
     sendMorseSpace();
+
     threeDits();
     sendMorseSpace();
 
+    for (int count = 4; count > 0; count--) {
+        sendMorseSpace();
+    }
 
-    sendMorseSpace();
-    sendMorseSpace();
-    sendMorseSpace();
-    sendMorseSpace();
+    for (int count = 3; count > 0; count--) {
+        sendMorseLtrR();
+        sendMorseSpace();
+    }
 
-    sendMorseLtrR();
-    sendMorseSpace();
-    sendMorseLtrR();
-    sendMorseSpace();
-    sendMorseLtrR();
-    sendMorseSpace();
-
-    sendMorseSpace();
-    sendMorseSpace();
-    sendMorseSpace();
-    sendMorseSpace();
-    sendMorseSpace();
+    for (int count = 5; count > 0; count--) {
+        sendMorseSpace();
+    }
 
     sendMorseLtrR();
     sendMorseSpace();
 
     monitor();
     sendDitsForever();
-    while (-1) ;
+    while (-1)
+        ;
 }
 
 /* end. */

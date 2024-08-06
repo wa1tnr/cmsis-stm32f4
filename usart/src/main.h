@@ -5,16 +5,10 @@
 #define MAIN_HEADER_FILE
 
 #include <delays.h>
-#include <morse.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <stm32f4xx.h>
-#include <usart.h>
 #include <gpio.h>
+#include <morse.h>
+#include <usart.h>
 
-#define oc(a) outputCharUSART6(a)
-#define ASCII_CR 0x0d
-#define ASCII_LF 0x0a
 #endif
 
 /* end. */

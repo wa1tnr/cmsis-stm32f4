@@ -1,5 +1,5 @@
 /* usart.c */
-/* Mon  5 Aug 01:36:14 UTC 2024 */
+/* Tue  6 Aug 00:23:18 UTC 2024 */
 
 /* USART6 enable and write-only (no listener) */
 /* port:  Forth source to C language */
@@ -7,9 +7,9 @@
 /* utilise: CMSIS notation and paradigm */
 
 #include <delays.h>
-#include <stm32f4xx.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stm32f4xx.h>
 
 #define printBuffer(a) printBufferToUSART6(a)
 #define oc(a) outputCharUSART6(a)

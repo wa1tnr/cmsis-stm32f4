@@ -5,9 +5,9 @@
 
 /* utilise: CMSIS notation and paradigm */
 
-#include <stm32f4xx.h>
 #include <delays.h>
 #include <morse.h>
+#include <stm32f4xx.h>
 
 /* ref. https://stackoverflow.com/questions/59546305/stm32f103-gpio-ports */
 /* RCC_APB2ENR  112, 146    GPIOx_CRH  172 */
