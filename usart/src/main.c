@@ -11,6 +11,7 @@
 
 /* ref. https://stackoverflow.com/questions/59546305/stm32f103-gpio-ports */
 /* RCC_APB2ENR  112, 146    GPIOx_CRH  172 */
+
 #include <main.h>
 
 int main(void) {

@@ -1,5 +1,5 @@
 /* usart.c */
-/* Tue  6 Aug 00:23:18 UTC 2024 */
+/* Tue  6 Aug 15:05:17 UTC 2024 */
 
 /* USART6 enable and write-only (no listener) */
 /* port:  Forth source to C language */
@@ -15,7 +15,8 @@
 #define oc(a) outputCharUSART6(a)
 #define ASCII_LF 0x0a
 
-char buffer[32];
+/* char buffer[32]; */
+char buffer[64];
 
 /* 30.6.1 Status register USART_SR  p. 1007 incl TC (bit 6) and TXE (bit 7) */
 void outputCharUSART6(char c) {
@@ -92,7 +93,18 @@ void printTestMessage() {
     snprintf(buffer, sizeof buffer, "%s", " in use: ");
     printBuffer(buffer);
 
-    snprintf(buffer, sizeof buffer, "%s", " tupelo honi gabber 00:32z");
+    snprintf(buffer, sizeof buffer, "%s", " runewelde darbunci 16:53z");
+
+    /***
+     *
+     * 64:
+     * 1234567890123456789012345678901234567890123456789012345678901234
+     *
+     * 32:
+     * 12345678901234567890123456789012
+     *
+     */
+
     printBuffer(buffer);
 
     printLF();
