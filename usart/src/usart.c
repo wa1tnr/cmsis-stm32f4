@@ -6,58 +6,24 @@
 
 /* utilise: CMSIS notation and paradigm */
 
-#if 0
-#include <morse.h>
-#endif
 #include <delays.h>
 #include <stm32f4xx.h>
 #include <stdbool.h>
 #include <stdio.h>
 
-/* ref. https://stackoverflow.com/questions/59546305/stm32f103-gpio-ports */
-/* RCC_APB2ENR  112, 146    GPIOx_CRH  172 */
-
 #define printBuffer(a) printBufferToUSART6(a)
-#if 0
-#define ASCII_CR 0x0d
-#endif
 #define oc(a) outputCharUSART6(a)
 #define ASCII_LF 0x0a
 
 char buffer[32];
 
 #if 0
-void resetBlueLED() {
-    GPIOD->BSRR = GPIO_BSRR_BR_15;
-}
-
-void setBlueLED() {
-    GPIOD->BSRR = GPIO_BSRR_BS_15;
-}
-
-void sendDit() {
-    GPIOD->BSRR = GPIO_BSRR_BS_15;
-    ditDelayOffToOn();
-    GPIOD->BSRR = GPIO_BSRR_BR_15;
-    ditDelayOffToOn();
-}
-
-void GPIOD_MODER_bang(void) {
-    /* PD15 is Blue LED - all 4x on PORT D pins 12-15 */
-    GPIOD->MODER |= GPIO_MODER_MODER15_0;
-}
-
-void turn_on_LED_forever() {
-    GPIOD->BSRR = GPIO_BSRR_BR_15;
-    blinkDelayOffToOn();
-    GPIOD->BSRR = GPIO_BSRR_BS_15;
-}
-
-void turn_OUT_LED_forever() {
-    GPIOD->BSRR = GPIO_BSRR_BS_15;
-    blinkDelayOffToOn();
-    GPIOD->BSRR = GPIO_BSRR_BR_15;
-}
+void resetBlueLED() { }
+void setBlueLED() { }
+void sendDit() { }
+void GPIOD_MODER_bang(void) { }
+void turn_on_LED_forever() { }
+void turn_OUT_LED_forever() { }
 #endif
 
 /* 30.6.1 Status register USART_SR  p. 1007 incl TC (bit 6) and TXE (bit 7) */
@@ -74,12 +40,7 @@ void outputCharUSART6(char c) {
 }
 
 #if 0
-void initGPIO(void) {
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
-    GPIOD->MODER |= GPIO_MODER_MODER15_0;
-    GPIOD->OTYPER = 0;
-    GPIOD->OSPEEDR = 0;
-}
+void initGPIO(void) { }
 #endif
 
 /* 0x8b for BRR if using C.H. Ting's reset clock of iirc 8 MHz */
@@ -101,25 +62,9 @@ void initUSART6(void) {
 }
 
 #if 0
-void blink() {
-    GPIOD->BSRR = GPIO_BSRR_BS_15;
-    blinkDelayOffToOn();
-    GPIOD->BSRR = GPIO_BSRR_BR_15;
-}
-
-void quickBlinks() {
-    for (int bln = 3; bln > 0; bln--) {
-        blink_once();
-    }
-}
-
-void sendMorseMsgNO() {
-    sendMorseLtrN();
-    sendMorseSpace();
-    sendMorseLtrO();
-    sendMorseSpace();
-    sendMorseWSpace();
-}
+void blink() { }
+void quickBlinks() { }
+void sendMorseMsgNO() { }
 #endif
 
 void printBufferToUSART6Old() {
@@ -159,11 +104,7 @@ void printLF() {
 }
 
 #if 0
-void threeQBlinks(void) {
-    for (int qblinks = 3; qblinks > 0; qblinks--) {
-        quickBlinks();
-    }
-}
+void threeQBlinks(void) { }
 #endif
 
 void printTestMessage() {
@@ -182,11 +123,7 @@ void printTestMessage() {
 }
 
 #if 0
-void lnthyWSpaceIval() {
-    for (int lwSpace = 2; lwSpace > 0; lwSpace--) {
-        sendMorseWSpace();
-    }
-}
+void lnthyWSpaceIval() { }
 #endif
 
 /* end. */
