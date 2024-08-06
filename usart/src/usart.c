@@ -17,15 +17,6 @@
 
 char buffer[32];
 
-#if 0
-void resetBlueLED() { }
-void setBlueLED() { }
-void sendDit() { }
-void GPIOD_MODER_bang(void) { }
-void turn_on_LED_forever() { }
-void turn_OUT_LED_forever() { }
-#endif
-
 /* 30.6.1 Status register USART_SR  p. 1007 incl TC (bit 6) and TXE (bit 7) */
 void outputCharUSART6(char c) {
     bool result = 0;
@@ -38,10 +29,6 @@ void outputCharUSART6(char c) {
         result = ((USART6->SR & USART_SR_TC) == USART_SR_TC);
     }
 }
-
-#if 0
-void initGPIO(void) { }
-#endif
 
 /* 0x8b for BRR if using C.H. Ting's reset clock of iirc 8 MHz */
 void initUSART6(void) {
@@ -60,12 +47,6 @@ void initUSART6(void) {
     USART6->CR1 |= USART_CR1_RE;
     USART6->CR1 |= USART_CR1_UE;
 }
-
-#if 0
-void blink() { }
-void quickBlinks() { }
-void sendMorseMsgNO() { }
-#endif
 
 void printBufferToUSART6Old() {
     int bufCharCount = (sizeof buffer) / (sizeof buffer[0]);
@@ -103,10 +84,6 @@ void printLF() {
     printBuffer(buffer);
 }
 
-#if 0
-void threeQBlinks(void) { }
-#endif
-
 void printTestMessage() {
 
     snprintf(buffer, sizeof buffer, "%s", " printBuffer(buffer)");
@@ -119,11 +96,6 @@ void printTestMessage() {
     printBuffer(buffer);
 
     printLF();
-    /* threeQBlinks(); */
 }
-
-#if 0
-void lnthyWSpaceIval() { }
-#endif
 
 /* end. */
