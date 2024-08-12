@@ -1,5 +1,5 @@
 /* main.c */
-/* Tue  6 Aug 00:23:18 UTC 2024 */
+/* Mon 12 Aug 18:29:44 UTC 2024 */
 
 /* USART6 enable and write-only (no listener) */
 /* port:  Forth source to C language */
@@ -18,7 +18,6 @@ int main(void) {
     initGPIO();
     quickBlinks();
     initUSART6();
-    printTestMessage();
     printTestMessage();
     lnthyWSpaceIval();
     ldelayed();

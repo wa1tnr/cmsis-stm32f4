@@ -1,5 +1,5 @@
 /* usart.c */
-/* Tue  6 Aug 20:08:08 UTC 2024 */
+/* Mon 12 Aug 18:29:44 UTC 2024 */
 
 /* USART6 enable and write-only (no listener) */
 /* port:  Forth source to C language */
@@ -69,15 +69,22 @@ void printLF() {
     printBuffer(buffer);
 }
 
-void printTestMessage() {
+#define TIMESTAMP "Mon 12 Aug 18:29:44 UTC 2024"
 
+void printTestMessageText() {
     snprintf(buffer, sizeof buffer, "%s", " printBuffer(buffer)");
     printBuffer(buffer);
 
     snprintf(buffer, sizeof buffer, "%s", " in use: ");
     printBuffer(buffer);
+    printLF();
 
-    snprintf(buffer, sizeof buffer, "%s", " fenewalde sparta   20:08z  w removed code");
+    snprintf(buffer, sizeof buffer, "%c%s", ' ', TIMESTAMP);
+    printBuffer(buffer);
+    printLF();
+
+    snprintf(buffer, sizeof buffer, "%s%c", " Griswold, PA  18:29z  tupelo  Cranston, RI", ' ');
+    printBuffer(buffer);
 
     /***
      *
@@ -88,10 +95,13 @@ void printTestMessage() {
      * 12345678901234567890123456789012
      *
      */
+}
 
-    printBuffer(buffer);
-
+void printTestMessage() {
+    printTestMessageText();
     printLF();
+    printLF();
+    printTestMessageText();
 }
 
 /* end. */
