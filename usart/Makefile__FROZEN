@@ -25,9 +25,12 @@ devlist:
 numbered:
 	@echo "    make 2>&1 | less -N"
 
+short:
+	@pio run 2>&1 | less -N
+
 # cp2104 Friend - Adafruit - /dev/ttyUSB0 used:
 term:
-	sleep 2; ./cf-fastpico9t-black_pill /dev/ttyUSB0
+	sleep 2; ./cf-fastpico9t-stm32f407_discovery /dev/ttyUSB0
 
 # https://docs.platformio.org/en/latest/core/userguide/pkg/cmd_exec.html
 
