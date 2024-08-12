@@ -25,11 +25,7 @@ int main(void) {
     monitor();
     while (-1)
         ;
-    doLEDEarlyStuff();
-    while (-1) {
-        quickBlinks();
-    }
-    return 0;
+    return 1;
 }
 
 /* end. */
