@@ -70,7 +70,7 @@ void printLF() {
     printBuffer(buffer);
 }
 
-#define TIMESTAMP "Fri Aug 16 11:45:51 PM UTC 2024"
+#define TIMESTAMP "Sat Aug 17 00:59:15 UTC 2024"
 
 void printTestMessageText() {
     snprintf(buffer, sizeof buffer, "%s", " printBuffer(buffer)");
@@ -84,7 +84,7 @@ void printTestMessageText() {
     printBuffer(buffer);
     printLF();
 
-    snprintf(buffer, sizeof buffer, "%s%c", " Plano, TX  11:45z  tupelo  Cincinatti, OH", ' ');
+    snprintf(buffer, sizeof buffer, "%s%c", " Plano, TX  00:59z  tupelo  Cincinatti, OH", ' ');
     printBuffer(buffer);
 
     /***
