@@ -6,17 +6,18 @@
 
 /* utilise: CMSIS notation and paradigm */
 
-#include <delays.h>
+#include <stm32f4xx.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <stm32f4xx.h>
+#include <buffer.h>
 
 #define printBuffer(a) printBufferToUSART6(a)
+
 #define oc(a) outputCharUSART6(a)
 #define ASCII_LF 0x0a
 
 /* char buffer[32]; */
-char buffer[64];
+/* CANON char buffer[64]; */
 
 /* 30.6.1 Status register USART_SR  p. 1007 incl TC (bit 6) and TXE (bit 7) */
 void outputCharUSART6(char c) {
@@ -69,7 +70,7 @@ void printLF() {
     printBuffer(buffer);
 }
 
-#define TIMESTAMP "Mon 12 Aug 18:29:44 UTC 2024"
+#define TIMESTAMP "Fri Aug 16 11:45:51 PM UTC 2024"
 
 void printTestMessageText() {
     snprintf(buffer, sizeof buffer, "%s", " printBuffer(buffer)");
@@ -83,7 +84,7 @@ void printTestMessageText() {
     printBuffer(buffer);
     printLF();
 
-    snprintf(buffer, sizeof buffer, "%s%c", " Griswold, PA  18:29z  tupelo  Cranston, RI", ' ');
+    snprintf(buffer, sizeof buffer, "%s%c", " Plano, TX  11:45z  tupelo  Cincinatti, OH", ' ');
     printBuffer(buffer);
 
     /***
